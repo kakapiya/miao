@@ -84,7 +84,98 @@ var kakapiya = (function () {
         return -1
     }
 
+    function drop(arr, n = 1) {
+        if (n >= arr.length) return []
 
+        let res = []
+        for (let i = n; i < arr.length; i++) {
+            res.push(arr[i])
+        }
+        return res
+    }
+
+    function dropRight(arr, n = 1) {
+        if (n >= arr.length) return []
+        let res = []
+        for (let i = 0; i < arr.length - n; i++) {
+            res.push(arr[i])
+        }
+        return res
+    }
+
+    function fill(arr, val, ...args) {
+        let start = 0
+        let end = arr.length
+        if (args.length == 1) {
+            start = args[0]
+        } else if (args.length == 2) {
+            start = args[0]
+            end = args[1]
+        }
+        for (let i = start; i < end; i++) {
+            arr[i] = val
+        }
+        return arr
+    }
+
+    function findIndex(arr, val, ...args) {
+
+    }
+
+    function findLastIndex(arr, val, ...args) {
+
+    }
+
+    function flatten(arr, val, ...args) {
+
+    }
+
+    function flattenDeep(arr, val, ...args) {
+
+    }
+
+    function flattenDepth(arr, val, ...args) {
+
+    }
+
+    function fromPairs(arr, val) {
+
+    }
+
+    function head() {
+
+    }
+
+    function indexOf() {
+
+    }
+
+    function initial() {
+
+    }
+
+    function reverse() {
+
+    }
+
+    function every() {
+
+    }
+
+    function filter() {
+
+    }
+
+    function find() {
+
+    }
+    function toArray() {
+
+    }
+
+    function sortedIndex() {
+
+    }
 
     return {
         compact,
@@ -92,8 +183,26 @@ var kakapiya = (function () {
         difference,
         join,
         last,
-        lastIndexOf
-
+        lastIndexOf,
+        drop,
+        dropRight,
+        //待完成
+        fill,
+        findIndex,
+        findLastIndex,
+        flatten,
+        flattenDeep,
+        flattenDepth,
+        fromPairs,
+        head,
+        indexOf,
+        initial,
+        reverse,
+        sortedIndex,
+        every,
+        filter,
+        find,
+        toArray
     }
 })()
 
