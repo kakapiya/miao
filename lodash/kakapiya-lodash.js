@@ -33,11 +33,39 @@ var kakapiya = (function () {
         }
         return res
     }
+
+    //
+    function difference(arr, other) {
+        let res = new Set()
+        let res1 = []
+
+        for (let i = 0; i < arr.length; i++) {
+            for (e of other) {
+                if (arr[i] == e) {
+                    break
+                } else {
+                    res.add(arr[i])
+                }
+            }
+        }
+        res.forEach(e => {
+            res1.push(e)
+        })
+        if (res) return []
+        return res1
+    };
+
+
+
+
+
     return {
         compact,
-        chunk
+        chunk,
+        difference
     }
 })()
 
 
 //kakapiya.chunk(['a', 'b', 'c', 'd'], 2);
+kakapiya.difference([2, 1], [2, 3]);
