@@ -1,6 +1,5 @@
 var kakapiya = (function () {
-
-
+    //分组
     function chunk(arr, size = 1) {
         let res = []
         let count = 0
@@ -26,6 +25,7 @@ var kakapiya = (function () {
         return res
     }
 
+    //去非
     function compact(arr) {
         let res = []
         for (e of arr) {
@@ -33,6 +33,8 @@ var kakapiya = (function () {
         }
         return res
     }
+
+    //
 
     return {
         compact,
