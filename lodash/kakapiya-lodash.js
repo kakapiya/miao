@@ -152,8 +152,12 @@ var kakapiya = (function () {
     }
 
     //flatten 三部曲
-    function flatten(arr, val, ...args) {
-
+    function flatten(arr) {
+        let res = []
+        for (e of arr) {
+            res.push(e)
+        }
+        return res
     }
 
     function flattenDeep(arr, val, ...args) {
