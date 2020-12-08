@@ -33,9 +33,6 @@ var kakapiya = (function () {
         }
         return res
     }
-
-    //
-
     return {
         compact,
         chunk
@@ -43,4 +40,4 @@ var kakapiya = (function () {
 })()
 
 
-kakapiya.chunk(['a', 'b', 'c', 'd'], 2);
+//kakapiya.chunk(['a', 'b', 'c', 'd'], 2);
