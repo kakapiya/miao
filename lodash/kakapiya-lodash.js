@@ -34,7 +34,7 @@ var kakapiya = (function () {
         return res
     }
 
-    //
+    // 找other外的数
     function difference(arr, other) {
         let res = new Set()
         let res1 = []
@@ -55,17 +55,49 @@ var kakapiya = (function () {
         return res1
     };
 
+    //拼接数组
+    function join(arr, sep) {
+        let res = ''
+        for (let i = 0; i < arr.length - 1; i++) {
+            res += arr[i] + sep
+        }
 
+        return res + arr[arr.length - 1]
+    }
+
+    function last(arr) {
+        return arr[arr.length - 1]
+
+    }
+
+    function lastIndexOf(arr, val, ...args) {
+        let from = 0
+        if (args.length > 0) {
+            from = args[0]
+        }
+        for (let i = arr.length - 1 - from; i >= 0; i--) {
+            if (arr[i] == val) {
+                return i
+            }
+        }
+        return -1
+    }
 
 
 
     return {
         compact,
         chunk,
-        difference
+        difference,
+        join,
+        last,
+        lastIndexOf
+
     }
 })()
 
 
 //kakapiya.chunk(['a', 'b', 'c', 'd'], 2);
-kakapiya.difference([2, 1], [2, 3]);
+// kakapiya.difference([2, 1], [2, 3]);
+// kakapiya.join([2, 1, 2, 3], "~");
+kakapiya.lastIndexOf([1, 2, 1, 2], 2);
