@@ -181,7 +181,7 @@ var kakapiya = (function () {
 
     }
 
-    // no test
+    // pass
     function reverse(arr, ...args) {
         let start = 0
         let end = arr.length - 1
@@ -243,13 +243,26 @@ var kakapiya = (function () {
     // no test
     function sortedIndex(arr, val) {
         for (let i = 0; i < arr.length; i++) {
-            if (val < arr[i]) {
+            if (val <= arr[i]) {
                 return i
             }
         }
         return arr.length
     }
 
+    function concat(arr, ...args) {
+        let res = []
+        for (let i = 0; i < arr.length; i++) {
+            res.push(arr)
+        }
+        for (let i = 0; i < args.length; i++) {
+
+            for (let j = 0; j < args[i].length; j++) {
+                res.push(args[j])
+            }
+        }
+        return res
+    }
     return {
         compact,
         chunk,
@@ -259,7 +272,7 @@ var kakapiya = (function () {
         lastIndexOf,
         drop,
         dropRight,
-
+        concat,
         //待完成
         find,
         findIndex,
@@ -287,3 +300,5 @@ var kakapiya = (function () {
 // kakapiya.difference([2, 1], [2, 3]);
 // kakapiya.join([2, 1, 2, 3], "~");
 // kakapiya.lastIndexOf([1, 2, 1, 2], 2);
+
+kakapiya.sortedIndex([1, 2, 2, 2, 2, 3], 2);
