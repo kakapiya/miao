@@ -259,8 +259,9 @@ var kakapiya = (function () {
         lastIndexOf,
         drop,
         dropRight,
+
         //待完成
-        fill,
+        find,
         findIndex,
         findLastIndex,
         flatten,
@@ -270,11 +271,13 @@ var kakapiya = (function () {
         head,
         indexOf,
         initial,
+
+        //待调试
         reverse,
         sortedIndex,
         every,
         filter,
-        find,
+        fill,
         toArray
     }
 })()
