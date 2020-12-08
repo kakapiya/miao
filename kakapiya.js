@@ -5,19 +5,24 @@ var kakapiya = (function () {
         let res = []
         let count = 0
 
-        for (let j = 0; j < arr.length; j += size) {
+        for (let i = 0; i < arr.length;) {
+            let s = size
             let e_arr = []
-            for (let i = j; i < j + size; i++) {
-                e_arr.push(arr[i])
-                count++
+            while (s--) {
+                if (arr[i++]) {
+                    e_arr.push(arr[i - 1])
+                    count++
+                }
             }
             res.push(e_arr)
+            if (i + size > arr.length) break
         }
+
         let e_arr = []
         for (let i = count; i < arr.length; i++) {
             e_arr.push(arr[i])
         }
-        res.push(e_arr)
+        if (count - arr.length) res.push(e_arr)
         return res
     }
 
@@ -34,3 +39,6 @@ var kakapiya = (function () {
         chunk
     }
 })()
+
+
+kakapiya.chunk(['a', 'b', 'c', 'd'], 2);
