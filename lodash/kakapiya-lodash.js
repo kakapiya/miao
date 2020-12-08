@@ -35,7 +35,7 @@ var kakapiya = (function () {
     }
 
     // 找other外的数
-    function difference(arr, other) {
+    function difference(arr, ...other) {
         let res = new Set()
         let res1 = []
 
@@ -51,7 +51,7 @@ var kakapiya = (function () {
         res.forEach(e => {
             res1.push(e)
         })
-        if (res) return []
+        if (res.length == 0) return []
         return res1
     };
 
@@ -59,7 +59,7 @@ var kakapiya = (function () {
     function join(arr, sep) {
         let res = ''
         for (let i = 0; i < arr.length - 1; i++) {
-            res += arr[i] + sep
+            res += arr[i] + (sep + "")
         }
 
         return res + arr[arr.length - 1]
@@ -74,6 +74,7 @@ var kakapiya = (function () {
         let from = 0
         if (args.length > 0) {
             from = args[0]
+            if (from <= 0) return -1
         }
         for (let i = arr.length - 1 - from; i >= 0; i--) {
             if (arr[i] == val) {
@@ -100,4 +101,4 @@ var kakapiya = (function () {
 //kakapiya.chunk(['a', 'b', 'c', 'd'], 2);
 // kakapiya.difference([2, 1], [2, 3]);
 // kakapiya.join([2, 1, 2, 3], "~");
-kakapiya.lastIndexOf([1, 2, 1, 2], 2);
+// kakapiya.lastIndexOf([1, 2, 1, 2], 2);
