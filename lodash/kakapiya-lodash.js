@@ -118,6 +118,31 @@ var kakapiya = (function () {
         return arr
     }
 
+    //find 三部曲
+    function find(collection, ...args) {
+        let val = args[0]
+        //isArray
+        if (Array.isArray(collection)) {
+            for (let i = 0; i < collection.length; i++) {
+                //数组
+                find()
+            }
+        }
+
+        //isObject
+        if (typeof collection == obj) {
+            for (key in collection) {
+                //对象
+
+                find(key)
+            }
+        }
+
+
+        collection(val)
+
+    }
+
     function findIndex(arr, val, ...args) {
 
     }
@@ -126,6 +151,7 @@ var kakapiya = (function () {
 
     }
 
+    //flatten 三部曲
     function flatten(arr, val, ...args) {
 
     }
@@ -137,6 +163,7 @@ var kakapiya = (function () {
     function flattenDepth(arr, val, ...args) {
 
     }
+
 
     function fromPairs(arr, val) {
 
@@ -154,27 +181,73 @@ var kakapiya = (function () {
 
     }
 
-    function reverse() {
-
+    // no test
+    function reverse(arr, ...args) {
+        let start = 0
+        let end = arr.length - 1
+        if (args.length == 1) {
+            start = args[0]
+        } else if (args.length == 2) {
+            start = args[0]
+            end = args[1]
+        }
+        while (start < end) {
+            let tmp = arr[start]
+            arr[start] = arr[end]
+            arr[end] = tmp
+            start++
+            end--
+        }
+        return arr
     }
 
-    function every() {
-
+    // no test
+    function filter(arr, p) {
+        let res = []
+        for (let i = 0; i < arr.length; i++) {
+            if (p(arr[i])) {
+                res.push(arr[i])
+            }
+        }
+        return res
     }
 
-    function filter() {
-
+    // no test
+    function every(arr, p) {
+        if (!arr) return true
+        for (let i = 0; i < arr.length; i++) {
+            if (p(arr[i])) {
+                return true
+            }
+        }
+        return false
     }
 
-    function find() {
-
+    // no test
+    function toArray(val) {
+        if (Array.isArray(val)) {
+            return val
+        }
+        let res = []
+        if (typeof val == "object" || typeof val == "string") {
+            for (k in val) {
+                res.push(val[k])
+            }
+        }
+        if (typeof val == "number" || !val) {
+            return []
+        }
+        return res
     }
-    function toArray() {
 
-    }
-
-    function sortedIndex() {
-
+    // no test
+    function sortedIndex(arr, val) {
+        for (let i = 0; i < arr.length; i++) {
+            if (val < arr[i]) {
+                return i
+            }
+        }
+        return arr.length
     }
 
     return {
