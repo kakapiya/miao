@@ -264,32 +264,44 @@ var kakapiya = (function () {
     }
 
     // no test
-    function filter(arr, p) {
+    function filter(collection, predicate) {
         let res = []
-        for (let i = 0; i < arr.length; i++) {
-            if (p(arr[i])) {
-                res.push(arr[i])
+        let final = []
+        let idx = 0
+        if (findIndex(collection, predicate, idx) != -1) {
+            idx = findIndex(collection, predicate)
+            res.push(idx)
+        }
+
+        for (let i = 0; i < collection.length; i++) {
+            if (!res.includes(i)) {
+                final.push(collection[i])
             }
         }
-        return res
+        return final
     }
 
     // no test
-    function every(arr, p) {
-        if (!arr) return true
-        for (let i = 0; i < arr.length; i++) {
-            if (p(arr[i])) {
-                return true
-            }
+    function every(arr, boolean) {
+        if (boolean != Boolean) {
+            if (findIndex(arr, boolean) != -1) return true
+            return false
         }
-        return false
+
+        for (e of arr) {
+            if (typeof e != "boolean") return false
+        }
+        return true
     }
 
     function some(arr, p) {
 
     }
 
-    // no test
+
+
+
+    //pass
     function toArray(val) {
         if (Array.isArray(val)) {
             return val
@@ -306,7 +318,7 @@ var kakapiya = (function () {
         return res
     }
 
-    // no test
+    // pass
     function sortedIndex(arr, val) {
         for (let i = 0; i < arr.length; i++) {
             if (val <= arr[i]) {
@@ -317,25 +329,32 @@ var kakapiya = (function () {
     }
 
     function concat(arr, ...args) {
-        let res = []
-        for (let i = 0; i < arr.length; i++) {
-            res.push(arr)
-        }
-        for (let i = 0; i < args.length; i++) {
-
-            for (let j = 0; j < args[i].length; j++) {
-                res.push(args[j])
-            }
-        }
-        return res
+        arr.push.apply(arr, ...args)
+        return arr
     }
 
     function keyBy(collection, iteratee) {
 
     }
 
-    function fromPairs(arr, val) {
+    function toPairs(object) {
+        let res = []
+        for (key in object) {
+            let item = []
+            item.push(key)
+            item.push(object[key])
+            res.push(item)
+        }
+        return res
+    }
 
+
+    function fromPairs(pairs) {
+        let res = {}
+        for (item of pairs) {
+            res[item[0]] = item[1]
+        }
+        return res
     }
 
     function head(array) {
@@ -347,7 +366,7 @@ var kakapiya = (function () {
     }
 
     function initial(array) {
-        return array.slice(0, array.length)
+        return array.slice(array.length - 1)
     }
 
     function curry() {
@@ -367,7 +386,6 @@ var kakapiya = (function () {
         lastIndexOf,
         drop,
         dropRight,
-        concat,
         head,
         indexOf,
         initial,
@@ -379,19 +397,21 @@ var kakapiya = (function () {
         fill,
         toArray,
         //待完成
-
         flattenDeep,
         flattenDepth,
-        fromPairs,
         keyBy,
         curry,
         groupBy,
+        some,
 
         //待调试
         every,
         filter,
         find,
 
+        concat,
+        toPairs,
+        fromPairs
 
     }
 })()
