@@ -36,23 +36,16 @@ var kakapiya = (function () {
 
     // 找other外的数
     function difference(arr, ...other) {
-        let res = new Set()
-        let res1 = []
-
-        for (let i = 0; i < arr.length; i++) {
-            for (e of other) {
-                if (arr[i] == e) {
-                    break
-                } else {
-                    res.add(arr[i])
-                }
-            }
+        let res = []
+        let other1 = []
+        for (e of other) {
+            other1.push(...e)
         }
-        res.forEach(e => {
-            res1.push(e)
-        })
-        if (res.length == 0) return []
-        return res1
+        for (let i = 0; i < arr.length; i++) {
+            let isInclude = other1.includes(arr[i])
+            if (!isInclude) res.push(arr[i])
+        }
+        return res
     };
 
     //拼接数组
@@ -161,27 +154,18 @@ var kakapiya = (function () {
     }
 
     function flattenDeep(arr, val, ...args) {
+        //base case 
 
+        if (!Array.isArray(arr)) {
+            return arr
+        }
+        flatten(arr)
+        if (Array.isArray(arr)) {
+            flattenDeep(arr)
+        }
     }
 
     function flattenDepth(arr, val, ...args) {
-
-    }
-
-
-    function fromPairs(arr, val) {
-
-    }
-
-    function head() {
-
-    }
-
-    function indexOf() {
-
-    }
-
-    function initial() {
 
     }
 
@@ -227,6 +211,10 @@ var kakapiya = (function () {
         return false
     }
 
+    function some(arr, p) {
+
+    }
+
     // no test
     function toArray(val) {
         if (Array.isArray(val)) {
@@ -267,6 +255,35 @@ var kakapiya = (function () {
         }
         return res
     }
+
+    function keyBy(collection, iteratee) {
+
+    }
+
+    function fromPairs(arr, val) {
+
+    }
+
+    function head() {
+
+    }
+
+    function indexOf() {
+
+    }
+
+    function initial() {
+
+    }
+
+    function curry() {
+
+    }
+
+    function groupBy() {
+
+    }
+
     return {
         compact,
         chunk,
@@ -288,6 +305,8 @@ var kakapiya = (function () {
         head,
         indexOf,
         initial,
+        curry,
+        groupBy,
 
         //待调试
         reverse,
@@ -295,14 +314,14 @@ var kakapiya = (function () {
         every,
         filter,
         fill,
-        toArray
+        toArray,
+        keyBy
     }
 })()
 
 
-//kakapiya.chunk(['a', 'b', 'c', 'd'], 2);
-// kakapiya.difference([2, 1], [2, 3]);
+// kakapiya.chunk(['a', 'b', 'c', 'd'], 2);
+// kakapiya.difference([1, 2, 3, 4, 5, 6, 7, 8], [1, 3], [4, 8], [6])
 // kakapiya.join([2, 1, 2, 3], "~");
 // kakapiya.lastIndexOf([1, 2, 1, 2], 2);
-
-kakapiya.sortedIndex([1, 2, 2, 2, 2, 3], 2);
+// kakapiya.sortedIndex([1, 2, 2, 2, 2, 3], 2);
