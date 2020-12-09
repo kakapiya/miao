@@ -121,7 +121,6 @@ var kakapiya = (function () {
                 find()
             }
         }
-
         //isObject
         if (typeof collection == obj) {
             for (key in collection) {
@@ -130,14 +129,17 @@ var kakapiya = (function () {
                 find(key)
             }
         }
-
-
         collection(val)
-
     }
 
-    function findIndex(arr, val, ...args) {
+    function findIndex(arr, predicate, fromIndex = 0) {
 
+        for (let i = fromIndex; i < arr.length; i++) {
+            if (predicate(arr[i])) {
+                return i
+            }
+        }
+        return -1
     }
 
     function findLastIndex(arr, val, ...args) {
@@ -325,3 +327,5 @@ var kakapiya = (function () {
 // kakapiya.join([2, 1, 2, 3], "~");
 // kakapiya.lastIndexOf([1, 2, 1, 2], 2);
 // kakapiya.sortedIndex([1, 2, 2, 2, 2, 3], 2);
+
+
