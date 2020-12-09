@@ -201,8 +201,9 @@ var kakapiya = (function () {
                 for (e of arr[i]) {
                     res.push(e)
                 }
-            }
-            res.push(arr[i])
+            } else { 
+                res.push(arr[i])
+            } 
         }
         return res
     }
@@ -399,4 +400,4 @@ var kakapiya = (function () {
 // kakapiya.lastIndexOf([1, 2, 1, 2], 2);
 // kakapiya.sortedIndex([1, 2, 2, 2, 2, 3], 2);
 
-kakapiya.findIndex([{ "user": "barney", "active": false }, { "user": "fred", "active": false }, { "user": "pebbles", "active": true }], { "user": "fred", "active": false })
+kakapiya.flatten([1, [2, [3, [4]], 5]])
