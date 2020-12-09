@@ -121,7 +121,7 @@ var kakapiya = (function () {
         return undefined
     }
 
-    //no test
+    //pass
     function findIndex(arr, predicate, fromIndex = 0) {
         if (typeof predicate == "function") {
             for (let i = fromIndex; i < arr.length; i++) {
@@ -157,6 +157,7 @@ var kakapiya = (function () {
         }
     }
 
+    //pass
     function findLastIndex(arr, predicate, fromIndex = 0) {
         if (typeof predicate == "function") {
             for (let i = arr.length - 1 - fromIndex; i >= 0; i--) {
@@ -211,7 +212,7 @@ var kakapiya = (function () {
     function flattenDeep(arr) {
         //base case 
         let res = []
-        let process = function () {
+        let process = function (arr) {
             for (let i = 0; i < arr.length; i++) {
                 if (Array.isArray(arr[i])) {
                     process(flatten(arr[i]))
@@ -227,7 +228,7 @@ var kakapiya = (function () {
     function flattenDepth(arr, depth = 1) {
         //base case 
         let res = []
-        let process = function () {
+        let process = function (arr) {
             if (depth) {
                 for (let i = 0; i < arr.length; i++) {
                     if (Array.isArray(arr[i])) {
@@ -333,10 +334,6 @@ var kakapiya = (function () {
         return arr
     }
 
-    function keyBy(collection, iteratee) {
-
-    }
-
     function toPairs(object) {
         let res = []
         for (key in object) {
@@ -347,7 +344,6 @@ var kakapiya = (function () {
         }
         return res
     }
-
 
     function fromPairs(pairs) {
         let res = {}
@@ -377,6 +373,10 @@ var kakapiya = (function () {
 
     }
 
+    function keyBy(collection, iteratee) {
+
+    }
+
     return {
         compact,
         chunk,
@@ -397,8 +397,7 @@ var kakapiya = (function () {
         fill,
         toArray,
         //待完成
-        flattenDeep,
-        flattenDepth,
+
         keyBy,
         curry,
         groupBy,
@@ -408,10 +407,11 @@ var kakapiya = (function () {
         every,
         filter,
         find,
-
         concat,
         toPairs,
-        fromPairs
+        fromPairs,
+        flattenDeep,
+        flattenDepth,
 
     }
 })()
@@ -423,4 +423,5 @@ var kakapiya = (function () {
 // kakapiya.lastIndexOf([1, 2, 1, 2], 2);
 // kakapiya.sortedIndex([1, 2, 2, 2, 2, 3], 2);
 
-kakapiya.flatten([1, [2, [3, [4]], 5]])
+// kakapiya.flatten([1, [2, [3, [4]], 5]])
+kakapiya.flattenDeep([1, [2, [3, [4]], 5]])
