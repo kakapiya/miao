@@ -49,9 +49,11 @@ var kakapiya = (function () {
     };
 
     // 找other外的数
-    function differenceBy(arr, ...other, iteratee) {
+    function differenceBy(arr, ...args) {
         let res = []
         let other1 = []
+        let other = args.slice(0, args.length - 1)
+        iteratee = args[args.length - 1]
         for (e of other) {
             other1.push(...e)
         }
@@ -65,9 +67,11 @@ var kakapiya = (function () {
 
 
     // 找other外的数
-    function differenceWith(arr, ...other, comparator) {
+    function differenceWith(arr, ...args) {
         let res = []
         let other1 = []
+        let other = args.slice(0, args.length - 1)
+        comparator = args[args.length - 1]
         for (e of other) {
             other1.push(...e)
         }
@@ -328,9 +332,6 @@ var kakapiya = (function () {
             return true
         }
     }
-
-
-
 
     //pass
     function toArray(val) {
