@@ -121,14 +121,42 @@ var kakapiya = (function () {
         return undefined
     }
 
-    function findIndex(arr, predicate, fromIndex = 0) {
 
-        for (let i = fromIndex; i < arr.length; i++) {
-            if (predicate(arr[i])) {
-                return i
+    function findIndex(arr, predicate, fromIndex = 0) {
+        if (typeof predicate == "function") {
+            for (let i = fromIndex; i < arr.length; i++) {
+                if (predicate(arr[i])) {
+                    return i
+                }
             }
+            return -1
         }
-        return -1
+        if (Array.isArray(predicate)) {
+            let key = predicate[0];
+            let val = predicate[1];
+            for (let i = fromIndex; i < arr.length; i++) {
+                if (arr[i][key] == val) return i
+            }
+
+            return -1
+        }
+        if (typeof predicate == "object") {
+            let o = predicate;
+            for (let i = fromIndex; i < arr.length; i++) {
+                for (k in o) {
+                    if (arr[i][k] == o[k]) return i
+                }
+            }
+            return -1
+        }
+
+        if (typeof predicate == "string") {
+            let key = predicate;
+            for (let i = fromIndex; i < arr.length; i++) {
+                if (arr[i][key]) return i
+            }
+            return -1
+        }
     }
 
     function findLastIndex(arr, val, ...args) {
@@ -324,3 +352,6 @@ var kakapiya = (function () {
 // kakapiya.sortedIndex([1, 2, 2, 2, 2, 3], 2);
 
 
+kakapiya.findIndex([{ "user": "barney", "active": false },
+{ "user": "fred", "active": false },
+{ "user": "pebbles", "active": true }], "active")
