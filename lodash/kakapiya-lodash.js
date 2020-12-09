@@ -196,26 +196,50 @@ var kakapiya = (function () {
     //flatten 三部曲
     function flatten(arr) {
         let res = []
-        for (e of arr) {
-            res.push(e)
+        for (let i = 0; i < arr.length; i++) {
+            if (Array.isArray(arr[i])) {
+                for (e of arr[i]) {
+                    res.push(e)
+                }
+            }
+            res.push(arr[i])
         }
         return res
     }
 
-    function flattenDeep(arr, val, ...args) {
+    function flattenDeep(arr) {
         //base case 
-
-        if (!Array.isArray(arr)) {
-            return arr
+        let res = []
+        let process = function () {
+            for (let i = 0; i < arr.length; i++) {
+                if (Array.isArray(arr[i])) {
+                    process(flatten(arr[i]))
+                } else {
+                    res.push(arr[i])
+                }
+            }
         }
-        flatten(arr)
-        if (Array.isArray(arr)) {
-            flattenDeep(arr)
-        }
+        process(arr)
+        return res
     }
 
-    function flattenDepth(arr, val, ...args) {
-
+    function flattenDepth(arr, depth = 1) {
+        //base case 
+        let res = []
+        let process = function () {
+            if (depth) {
+                for (let i = 0; i < arr.length; i++) {
+                    if (Array.isArray(arr[i])) {
+                        process(flatten(arr[i]))
+                    } else {
+                        res.push(arr[i])
+                    }
+                }
+                depth--
+            }
+        }
+        process(arr)
+        return res
     }
 
     // pass
