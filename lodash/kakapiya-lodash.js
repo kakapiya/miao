@@ -368,28 +368,31 @@ var kakapiya = (function () {
         drop,
         dropRight,
         concat,
-        //待完成
-        find,
-        findIndex,
-        findLastIndex,
-        flatten,
-        flattenDeep,
-        flattenDepth,
-        fromPairs,
         head,
         indexOf,
         initial,
+        findIndex,
+        findLastIndex,
+        flatten,
+        reverse,
+        sortedIndex,
+        fill,
+        toArray,
+        //待完成
+
+        flattenDeep,
+        flattenDepth,
+        fromPairs,
+        keyBy,
         curry,
         groupBy,
 
         //待调试
-        reverse,
-        sortedIndex,
         every,
         filter,
-        fill,
-        toArray,
-        keyBy
+        find,
+
+
     }
 })()
 
