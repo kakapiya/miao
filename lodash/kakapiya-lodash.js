@@ -112,24 +112,13 @@ var kakapiya = (function () {
     }
 
     //find 三部曲
-    function find(collection, ...args) {
-        let val = args[0]
-        //isArray
-        if (Array.isArray(collection)) {
-            for (let i = 0; i < collection.length; i++) {
-                //数组
-                find()
+    function find(collection, predicate, fromIndex = 0) {
+        for (let i = fromIndex; i < arr.length; i++) {
+            if (predicate(arr[i])) {
+                return arr[i]
             }
         }
-        //isObject
-        if (typeof collection == obj) {
-            for (key in collection) {
-                //对象
-
-                find(key)
-            }
-        }
-        collection(val)
+        return undefined
     }
 
     function findIndex(arr, predicate, fromIndex = 0) {
@@ -144,6 +133,12 @@ var kakapiya = (function () {
 
     function findLastIndex(arr, val, ...args) {
 
+        for (let i = arr.length - fromIndex - 1; i >= 0; i++) {
+            if (predicate(arr[i])) {
+                return i
+            }
+        }
+        return -1
     }
 
     //flatten 三部曲
