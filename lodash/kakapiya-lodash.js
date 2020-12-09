@@ -48,6 +48,37 @@ var kakapiya = (function () {
         return res
     };
 
+    // 找other外的数
+    function differenceBy(arr, ...other, iteratee) {
+        let res = []
+        let other1 = []
+        for (e of other) {
+            other1.push(...e)
+        }
+        other1 = other1.map(e => iteratee(e))
+        for (let i = 0; i < arr.length; i++) {
+            let isInclude = other1.includes(iteratee(arr[i]))
+            if (!isInclude) res.push(arr[i])
+        }
+        return res
+    };
+
+
+    // 找other外的数
+    function differenceWith(arr, ...other, comparator) {
+        let res = []
+        let other1 = []
+        for (e of other) {
+            other1.push(...e)
+        }
+        for (let i = 0; i < arr.length; i++) {
+            let isInclude = other1.includes(arr[i])
+            if (!isInclude) res.push(arr[i])
+        }
+        return res
+    };
+
+
     //拼接数组
     function join(arr, sep) {
         let res = ''
@@ -211,37 +242,33 @@ var kakapiya = (function () {
 
     function flattenDeep(arr) {
         //base case 
-        let res = []
-        let process = function (arr) {
-            for (let i = 0; i < arr.length; i++) {
-                if (Array.isArray(arr[i])) {
-                    process(flatten(arr[i]))
-                } else {
-                    res.push(arr[i])
+        let result = [];
+        for (let i = 0; i < arr.length; i++) {
+            if (Array.isArray(arr[i])) {
+                let flattenArr = flattenDeep(arr[i]);
+                for (let j = 0; j < flattenArr.length; j++) {
+                    result.push(flattenArr[j]);
                 }
+            } else {
+                result.push(arr[i]);
             }
         }
-        process(arr)
-        return res
+        return result;
     }
 
     function flattenDepth(arr, depth = 1) {
-        //base case 
-        let res = []
-        let process = function (arr) {
-            if (depth) {
-                for (let i = 0; i < arr.length; i++) {
-                    if (Array.isArray(arr[i])) {
-                        process(flatten(arr[i]))
-                    } else {
-                        res.push(arr[i])
-                    }
+        let result = [];
+        for (let i = 0; i < arr.length; i++) {
+            if (depth > 0 && Array.isArray(arr[i])) {
+                let flattenArr = flattenDepth(arr[i], depth - 1);
+                for (let j = 0; j < flattenArr.length; j++) {
+                    result.push(flattenArr[j]);
                 }
-                depth--
+            } else {
+                result.push(arr[i]);
             }
         }
-        process(arr)
-        return res
+        return result;
     }
 
     // pass
@@ -295,8 +322,11 @@ var kakapiya = (function () {
         return true
     }
 
-    function some(arr, p) {
+    function some(arr, boolean) {
 
+        if (ever(arr, boolean)) {
+            return true
+        }
     }
 
 
@@ -362,25 +392,88 @@ var kakapiya = (function () {
     }
 
     function initial(array) {
-        return array.slice(array.length - 1)
+        return array.slice(0, array.length - 1)
     }
 
-    function curry() {
-
+    // no test
+    function curry(func) {
+        return function (args) {
+            return func(args)
+        }
     }
 
-    function groupBy() {
+    function groupBy(collection, iteratee) {
+        let res = {}
+        if (typeof iteratee == "function") {
+            for (let i = 0; i < collection.length; i++) {
+                let key = iteratee(collection[i])
+                if (!res[collection[i][key]]) {
+                    res[collection[i][key]] = [collection[i]]
+                } else {
+                    res[collection[i][key]].push(collection[i])
+                }
 
+            }
+            return res
+        }
+
+        if (typeof iteratee == "string") {
+            let key = iteratee;
+            for (let i = 0; i < collection.length; i++) {
+                //res对象的collection[i][key]键对应的值（数组）
+                //res[one[length]]
+                if (!res[collection[i][key]]) {
+                    res[collection[i][key]] = [collection[i]]
+                } else {
+                    res[collection[i][key]].push(collection[i])
+                }
+            }
+            return res
+        }
     }
 
     function keyBy(collection, iteratee) {
+        let res = {}
+        if (typeof iteratee == "function") {
+            for (let i = 0; i < collection.length; i++) {
+                let key = collection[iteratee(collection[i])]
+                res[key] = collection[i]
 
+            }
+            return res
+        }
+        if (Array.isArray(iteratee)) {
+            let key = iteratee[0];
+            for (let i = 0; i < collection.length; i++) {
+                res[collection[i][key]] = collection[i]
+            }
+
+            return res
+        }
+        if (typeof iteratee == "object") {
+            let key = iteratee;
+            for (let i = 0; i < collection.length; i++) {
+                res[collection[i][key]] = collection[i]
+            }
+
+            return res
+        }
+
+        if (typeof iteratee == "string") {
+            let key = iteratee;
+            for (let i = 0; i < collection.length; i++) {
+                res[collection[i][key]] = collection[i]
+            }
+            return res
+        }
     }
 
     return {
         compact,
         chunk,
         difference,
+        differenceBy,
+        differenceWith,
         join,
         last,
         lastIndexOf,
@@ -398,9 +491,8 @@ var kakapiya = (function () {
         toArray,
         //待完成
 
-        keyBy,
-        curry,
-        groupBy,
+
+
         some,
 
         //待调试
@@ -412,7 +504,9 @@ var kakapiya = (function () {
         fromPairs,
         flattenDeep,
         flattenDepth,
-
+        keyBy,
+        curry,
+        groupBy,
     }
 })()
 
@@ -424,4 +518,4 @@ var kakapiya = (function () {
 // kakapiya.sortedIndex([1, 2, 2, 2, 2, 3], 2);
 
 // kakapiya.flatten([1, [2, [3, [4]], 5]])
-kakapiya.flattenDeep([1, [2, [3, [4]], 5]])
+kakapiya.flattenDeep([1, [2, [3, [4]], 5, [6, [7, 8]]]])
