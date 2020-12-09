@@ -157,7 +157,7 @@ var kakapiya = (function () {
         }
     }
 
-    function findIndex(arr, predicate, fromIndex = 0) {
+    function findLastIndex(arr, predicate, fromIndex = 0) {
         if (typeof predicate == "function") {
             for (let i = arr.length - 1 - fromIndex; i >= 0; i--) {
                 if (predicate(arr[i])) {
