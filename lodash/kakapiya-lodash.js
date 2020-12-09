@@ -121,7 +121,7 @@ var kakapiya = (function () {
         return undefined
     }
 
-
+    //no test
     function findIndex(arr, predicate, fromIndex = 0) {
         if (typeof predicate == "function") {
             for (let i = fromIndex; i < arr.length; i++) {
@@ -141,11 +141,9 @@ var kakapiya = (function () {
             return -1
         }
         if (typeof predicate == "object") {
-            let o = predicate;
+            let o = JSON.stringify(predicate);
             for (let i = fromIndex; i < arr.length; i++) {
-                for (k in o) {
-                    if (arr[i][k] == o[k]) return i
-                }
+                if (JSON.stringify(arr[i]) == o) return i
             }
             return -1
         }
@@ -159,15 +157,41 @@ var kakapiya = (function () {
         }
     }
 
-    function findLastIndex(arr, val, ...args) {
-
-        for (let i = arr.length - fromIndex - 1; i >= 0; i++) {
-            if (predicate(arr[i])) {
-                return i
+    function findIndex(arr, predicate, fromIndex = 0) {
+        if (typeof predicate == "function") {
+            for (let i = arr.length - 1 - fromIndex; i >= 0; i--) {
+                if (predicate(arr[i])) {
+                    return i
+                }
             }
+            return -1
         }
-        return -1
+        if (Array.isArray(predicate)) {
+            let key = predicate[0];
+            let val = predicate[1];
+            for (let i = arr.length - 1 - fromIndex; i >= 0; i--) {
+                if (arr[i][key] == val) return i
+            }
+
+            return -1
+        }
+        if (typeof predicate == "object") {
+            let o = JSON.stringify(predicate);
+            for (let i = arr.length - 1 - fromIndex; i >= 0; i--) {
+                if (JSON.stringify(arr[i]) == o) return i
+            }
+            return -1
+        }
+
+        if (typeof predicate == "string") {
+            let key = predicate;
+            for (let i = arr.length - 1 - fromIndex; i >= 0; i--) {
+                if (arr[i][key]) return i
+            }
+            return -1
+        }
     }
+
 
     //flatten 三部曲
     function flatten(arr) {
@@ -351,7 +375,4 @@ var kakapiya = (function () {
 // kakapiya.lastIndexOf([1, 2, 1, 2], 2);
 // kakapiya.sortedIndex([1, 2, 2, 2, 2, 3], 2);
 
-
-kakapiya.findIndex([{ "user": "barney", "active": false },
-{ "user": "fred", "active": false },
-{ "user": "pebbles", "active": true }], "active")
+kakapiya.findIndex([{ "user": "barney", "active": false }, { "user": "fred", "active": false }, { "user": "pebbles", "active": true }], { "user": "fred", "active": false })
