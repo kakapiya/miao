@@ -201,9 +201,9 @@ var kakapiya = (function () {
                 for (e of arr[i]) {
                     res.push(e)
                 }
-            } else { 
+            } else {
                 res.push(arr[i])
-            } 
+            }
         }
         return res
     }
@@ -338,16 +338,16 @@ var kakapiya = (function () {
 
     }
 
-    function head() {
-
+    function head(array) {
+        return array[0]
     }
 
-    function indexOf() {
-
+    function indexOf(arr, val, fromIndex = 0) {
+        return arr.indexOf(val, fromIndex)
     }
 
-    function initial() {
-
+    function initial(array) {
+        return array.slice(0, array.length)
     }
 
     function curry() {
