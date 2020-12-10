@@ -166,14 +166,6 @@ var kakapiya = (function () {
     }
 
     //find 三部曲
-    function find(collection, predicate, fromIndex = 0) {
-        for (let i = fromIndex; i < arr.length; i++) {
-            if (predicate(arr[i])) {
-                return arr[i]
-            }
-        }
-        return undefined
-    }
 
     //pass
     function findIndex(arr, predicate, fromIndex = 0) {
@@ -476,20 +468,22 @@ var kakapiya = (function () {
     // unfinished
     function isEqual(val, other) {
         if (theTypeOf(val) !== theTypeOf(other)) return false
+        if (val.length !== other.length) return false
 
         if (theTypeOf(val) === "arrays") {
             for (let i = 0; i < val.length; i++) {
-                if (isEqual(val[i], other[i])) return true
+                if (!isEqual(val[i], other[i])) return false
             }
         }
 
         if (theTypeOf(val) === "object") {
             for (key in val) {
-                if (isEqual(val[key], other[key])) return true
+                if (!isEqual(val[key], other[key])) return false
             }
         }
 
         if (val === other) return true
+        return false
     }
 
     function identity(...args) {
@@ -497,45 +491,52 @@ var kakapiya = (function () {
     }
 
     function isMatch(object, source) {
-        source[0]
+        for (e in source) {
+            if (!isEqual(object[e], source[e])) return false
+        }
+        return true
     }
 
     function matches(source) {
-        return function (collection, source) {
-            if (source) {
+        return function f(object) {
+            for (e in source) {
+                if (!isEqual(object[e], source[e])) return false
+            }
+            return true
+        }
+
+    }
+
+    function matchesProperty(path, srcValue) {
+        for (e of path) {
+            if (isEqual(e, srcValue)) {
 
             }
         }
+        return true
     }
-
-    // no test
-    function filter(collection, predicate) {
-        let res = []
-        let final = []
-        let idx = 0
-        if (findIndex(collection, predicate, idx) != -1) {
-            idx = findIndex(collection, predicate)
-            res.push(idx)
-        }
-
-        for (let i = 0; i < collection.length; i++) {
-            if (!res.includes(i)) {
-                final.push(collection[i])
-            }
-        }
-        return final
-    }
-
-
-
-
-    function matchesProperty(source) {
-
-    }
-
     function property(source) {
 
     }
+
+
+    // no test
+    function filter(collection, predicate = identity) {
+    }
+
+
+    function find(collection, predicate, fromIndex = 0) {
+        for (let i = fromIndex; i < arr.length; i++) {
+            if (predicate(arr[i])) {
+                return arr[i]
+            }
+        }
+        return undefined
+    }
+
+
+
+
 
 
 
@@ -623,4 +624,8 @@ var kakapiya = (function () {
 // kakapiya.flatten([1, [2, [3, [4]], 5]])
 // kakapiya.flattenDeep([1, [2, [3, [4]], 5, [6, [7, 8]]]])
 // kakapiya.differenceBy([{ "x": 2 }, { "x": 1 }], [{ "x": 1 }], "x")
+
+var object = { 'a': 1, "c": 4 };
+var other = { 'a': 1, "b": 2 };
+kakapiya.isEqual(object, other);
 
