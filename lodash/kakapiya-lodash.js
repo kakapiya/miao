@@ -8,6 +8,10 @@ var kakapiya = (function () {
         if (typeof e == "object") return "object"
     }
 
+    function maxLength(a1, a2) {
+        return a1.length > a2.length ? a1.length : a2.length
+    }
+
     //分组
     function chunk(arr, size = 1) {
         let res = []
@@ -63,9 +67,15 @@ var kakapiya = (function () {
         let other1 = []
         let other = args.slice(0, args.length - 1)
         let iteratee = args[args.length - 1]
+
         for (e of other) {
-            other1.push(...e)
+            if (theTypeOf(e) == "array" || theTypeOf(e) == "object") {
+                other1.push(...e)
+            } else {
+                other1.push(e)
+            }
         }
+
         if (theTypeOf(iteratee) == "function") {
             other1 = other1.map(e => iteratee(e))
             for (let i = 0; i < arr.length; i++) {
@@ -75,29 +85,30 @@ var kakapiya = (function () {
             return res
         }
 
-        //返回值组成的数组
-
-        other1 = other1.map(e => {
-            return e[iteratee]
-        })
-        for (let i = 0; i < arr.length; i++) {
-            let isInclude = other1.includes(arr[i][iteratee])
-            if (!isInclude) res.push(arr[i])
+        if (theTypeOf(iteratee) == "array") {
+            if (arguments.length > 2) other1.push.apply(other1, iteratee)
+            for (let i = 0; i < arr.length; i++) {
+                let isInclude = other1.includes(arr[i])
+                if (!isInclude) res.push(arr[i])
+            }
+            return res
         }
-        return res
+
+
+
+
     };
 
 
     // 找other外的数
     function differenceWith(arr, ...args) {
         let res = []
-        let other = args[0][0]
+        let other = args[0]
         let comparator = args[1]
 
-        res[0] = arr.filter(e => {
-            return comparator(e, other)
-        })
-
+        for (let i = 0; i < arr.length; i++) {
+            if (comparator(arr[i], other[i])) res.push(arr[i])
+        }
         return res
     };
 
@@ -474,12 +485,14 @@ var kakapiya = (function () {
             for (let i = 0; i < val.length; i++) {
                 if (!isEqual(val[i], other[i])) return false
             }
+            return true
         }
 
         if (theTypeOf(val) === "object") {
             for (key in val) {
                 if (!isEqual(val[key], other[key])) return false
             }
+            return true
         }
 
         if (val === other) return true
@@ -624,8 +637,9 @@ var kakapiya = (function () {
 // kakapiya.flatten([1, [2, [3, [4]], 5]])
 // kakapiya.flattenDeep([1, [2, [3, [4]], 5, [6, [7, 8]]]])
 // kakapiya.differenceBy([{ "x": 2 }, { "x": 1 }], [{ "x": 1 }], "x")
-
-var object = { 'a': 1, "c": 4 };
-var other = { 'a': 1, "b": 2 };
-kakapiya.isEqual(object, other);
+// kakapiya.differenceBy([1,2,3,4,5,6,7,8],[1,3],[4,8],[6],it => it)
+// kakapiya.differenceWith([{ "x": 1, "y": 2 }, { "x": 2, "y": 1 }], [{ "x": 1, "y": 2 }], kakapiya.isEqual)
+// var object = { 'a': 1, "c": 4 };
+// var other = { 'a': 1, "b": 2 };
+// kakapiya.isEqual(object, other);
 
