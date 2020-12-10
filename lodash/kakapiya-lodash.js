@@ -314,23 +314,6 @@ var kakapiya = (function () {
         return arr
     }
 
-    // no test
-    function filter(collection, predicate) {
-        let res = []
-        let final = []
-        let idx = 0
-        if (findIndex(collection, predicate, idx) != -1) {
-            idx = findIndex(collection, predicate)
-            res.push(idx)
-        }
-
-        for (let i = 0; i < collection.length; i++) {
-            if (!res.includes(i)) {
-                final.push(collection[i])
-            }
-        }
-        return final
-    }
 
     // no test
     function every(arr, boolean) {
@@ -416,10 +399,11 @@ var kakapiya = (function () {
     }
 
     // no test
-    function curry(func) {
-        return function (args) {
-            return func(args)
+    function curry(func, arity) {
+        return function curried(fixedArgs) {
+            func(fixedArgs)
         }
+
     }
 
     function groupBy(collection, iteratee) {
@@ -488,29 +472,92 @@ var kakapiya = (function () {
         }
 
     }
+
+    // unfinished
+    function isEqual(val, other) {
+        if (theTypeOf(val) !== theTypeOf(other)) return false
+
+        if (theTypeOf(val) === "arrays") {
+            for (let i = 0; i < val.length; i++) {
+                if (isEqual(val[i], other[i])) return true
+            }
+        }
+
+        if (theTypeOf(val) === "object") {
+            for (key in val) {
+                if (isEqual(val[key], other[key])) return true
+            }
+        }
+
+        if (val === other) return true
+    }
+
     function identity(...args) {
         return args[0]
     }
 
-    function matches(source) {
-
+    function isMatch(object, source) {
+        source[0]
     }
 
-    function isEqual(value, other) {
-
-
-        if (theTypeOf(value) != "array" && theTypeOf(value) != "object") {
-            if (value != other) return false
-        } else {
-            for (let i = 0; i < value.length; i++) {
+    function matches(source) {
+        return function (collection, source) {
+            if (source) {
 
             }
         }
-        return true
+    }
+
+    // no test
+    function filter(collection, predicate) {
+        let res = []
+        let final = []
+        let idx = 0
+        if (findIndex(collection, predicate, idx) != -1) {
+            idx = findIndex(collection, predicate)
+            res.push(idx)
+        }
+
+        for (let i = 0; i < collection.length; i++) {
+            if (!res.includes(i)) {
+                final.push(collection[i])
+            }
+        }
+        return final
+    }
+
+
+
+
+    function matchesProperty(source) {
 
     }
 
-    function dropWhile(arr, predicate = identity) {
+    function property(source) {
+
+    }
+
+
+
+    function dropWhile(arr, predicate) {
+        let count = 0
+
+        if (theTypeOf(predicate) == "object") {
+            predicate = matches
+        } else if (theTypeOf(predicate) == "array") {
+            predicate = matchesProperty
+        } else if (theTypeOf(predicate) == "string") {
+            predicate = property
+        }
+        for (e of arr) {
+            if (predicate(e)) {
+                count++
+            } else {
+                break
+            }
+        }
+        return drop(arr, count)
+
 
 
     }
@@ -543,6 +590,7 @@ var kakapiya = (function () {
         some,
         dropWhile,
         dropRightWhile,
+        isEqual,
 
         // matches,
         // matchesProperty,
@@ -560,6 +608,8 @@ var kakapiya = (function () {
         keyBy,
         curry,
         groupBy,
+        identity,
+        isMatch
     }
 })()
 
@@ -572,4 +622,5 @@ var kakapiya = (function () {
 
 // kakapiya.flatten([1, [2, [3, [4]], 5]])
 // kakapiya.flattenDeep([1, [2, [3, [4]], 5, [6, [7, 8]]]])
-kakapiya.differenceBy([{ "x": 2 }, { "x": 1 }], [{ "x": 1 }], "x")
+// kakapiya.differenceBy([{ "x": 2 }, { "x": 1 }], [{ "x": 1 }], "x")
+
