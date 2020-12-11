@@ -637,6 +637,7 @@ var kakapiya = (function () {
 // kakapiya.flatten([1, [2, [3, [4]], 5]])
 // kakapiya.flattenDeep([1, [2, [3, [4]], 5, [6, [7, 8]]]])
 // kakapiya.differenceBy([{ "x": 2 }, { "x": 1 }], [{ "x": 1 }], "x")
+kakapiya.differenceBy([1,2,3,4],[1,3],[4])
 // kakapiya.differenceBy([1,2,3,4,5,6,7,8],[1,3],[4,8],[6],it => it)
 // kakapiya.differenceWith([{ "x": 1, "y": 2 }, { "x": 2, "y": 1 }], [{ "x": 1, "y": 2 }], kakapiya.isEqual)
 // var object = { 'a': 1, "c": 4 };
