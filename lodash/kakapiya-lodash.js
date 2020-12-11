@@ -67,6 +67,11 @@ var kakapiya = (function () {
         let other1 = []
         let other = args.slice(0, args.length - 1)
         let iteratee = args[args.length - 1]
+        if (args.length == 1) {
+            other = args[0]
+            iteratee = args[0]
+        }
+
 
         for (e of other) {
             if (theTypeOf(e) == "array" || theTypeOf(e) == "object") {
@@ -93,6 +98,8 @@ var kakapiya = (function () {
             }
             return res
         }
+
+
 
 
 
@@ -481,7 +488,7 @@ var kakapiya = (function () {
         if (theTypeOf(val) !== theTypeOf(other)) return false
         if (val.length !== other.length) return false
 
-        if (theTypeOf(val) === "arrays") {
+        if (theTypeOf(val) === "array") {
             for (let i = 0; i < val.length; i++) {
                 if (!isEqual(val[i], other[i])) return false
             }
@@ -528,7 +535,11 @@ var kakapiya = (function () {
         }
         return true
     }
-    function property(source) {
+    function property(path) {
+
+    }
+
+    function map() {
 
     }
 
@@ -637,7 +648,8 @@ var kakapiya = (function () {
 // kakapiya.flatten([1, [2, [3, [4]], 5]])
 // kakapiya.flattenDeep([1, [2, [3, [4]], 5, [6, [7, 8]]]])
 // kakapiya.differenceBy([{ "x": 2 }, { "x": 1 }], [{ "x": 1 }], "x")
-kakapiya.differenceBy([1,2,3,4],[1,3],[4])
+kakapiya.isEqual([{},{}],[{},{}])
+// kakapiya.differenceBy([1, 2, 3, 4], [2, 3, 4, 5])
 // kakapiya.differenceBy([1,2,3,4,5,6,7,8],[1,3],[4,8],[6],it => it)
 // kakapiya.differenceWith([{ "x": 1, "y": 2 }, { "x": 2, "y": 1 }], [{ "x": 1, "y": 2 }], kakapiya.isEqual)
 // var object = { 'a': 1, "c": 4 };
