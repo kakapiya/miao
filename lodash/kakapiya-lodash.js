@@ -409,11 +409,26 @@ var kakapiya = (function () {
     }
 
     // no test
-    function curry(func, arity) {
-        return function curried(fixedArgs) {
-            func(fixedArgs)
+    //参数复用
+    function curry(func) {
+        //curried
+        return function () {
+            //先将第一个括号的参数传入args里
+            let args = Array.prototype.slice.call(arguments)
+            //curried(args) 返回的还是函数
+            let inner = function () {
+                args.push(...arguments)
+                return inner
+            }    
+            //因为递归调用inner，所以最后返回的始终是函数，利用这种递归调用，变量被存在args中
+            //此时将这些参数拿出来用即可
+            inner.toString = function () {
+                return func(...args)
+            }
+            //延迟调用的参数再次压入
+            return inner
         }
-
+    
     }
 
     function groupBy(collection, iteratee) {
@@ -535,9 +550,34 @@ var kakapiya = (function () {
         }
         return true
     }
-    function property(path) {
 
+    function property(path) {
+        if (theTypeOf(path) == "array") {
+            return function f(object, res = [], path = path) {
+                while (path.length) {
+                    let objVal = object[path.shift()]
+                    res.push(objVal)
+                }
+                return res
+
+            }
+        }
+
+        if (theTypeOf(path) == "string") {
+            return function f(object, res = [], path = path) {
+                path = path.split(".")
+                while (path.length) {
+                    let objVal = object[path.shift()]
+                    res.push(objVal)
+                }
+
+                return res
+
+            }
+        }
     }
+
+
 
     function map() {
 
@@ -557,12 +597,6 @@ var kakapiya = (function () {
         }
         return undefined
     }
-
-
-
-
-
-
 
     function dropWhile(arr, predicate) {
         let count = 0
@@ -634,7 +668,8 @@ var kakapiya = (function () {
         curry,
         groupBy,
         identity,
-        isMatch
+        isMatch,
+        property
     }
 })()
 
@@ -648,11 +683,13 @@ var kakapiya = (function () {
 // kakapiya.flatten([1, [2, [3, [4]], 5]])
 // kakapiya.flattenDeep([1, [2, [3, [4]], 5, [6, [7, 8]]]])
 // kakapiya.differenceBy([{ "x": 2 }, { "x": 1 }], [{ "x": 1 }], "x")
-kakapiya.isEqual([{},{}],[{},{}])
-// kakapiya.differenceBy([1, 2, 3, 4], [2, 3, 4, 5])
+// kakapiya.isEqual([{}, {}], [{}, {}])
+// let res = kakapiya.differenceBy([1, 2, 3, 4], [2, 3, 4, 5])
 // kakapiya.differenceBy([1,2,3,4,5,6,7,8],[1,3],[4,8],[6],it => it)
 // kakapiya.differenceWith([{ "x": 1, "y": 2 }, { "x": 2, "y": 1 }], [{ "x": 1, "y": 2 }], kakapiya.isEqual)
 // var object = { 'a': 1, "c": 4 };
 // var other = { 'a': 1, "b": 2 };
 // kakapiya.isEqual(object, other);
 
+let f1 = kakapiya.property("a.b")
+let res = f1(({ 'a': { 'b': 2 } }))
