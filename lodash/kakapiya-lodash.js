@@ -419,7 +419,7 @@ var kakapiya = (function () {
             let inner = function () {
                 args.push(...arguments)
                 return inner
-            }    
+            }
             //因为递归调用inner，所以最后返回的始终是函数，利用这种递归调用，变量被存在args中
             //此时将这些参数拿出来用即可
             inner.toString = function () {
@@ -428,7 +428,7 @@ var kakapiya = (function () {
             //延迟调用的参数再次压入
             return inner
         }
-    
+
     }
 
     function groupBy(collection, iteratee) {
@@ -532,6 +532,7 @@ var kakapiya = (function () {
         return true
     }
 
+
     function matches(source) {
         return function f(object) {
             for (e in source) {
@@ -570,9 +571,7 @@ var kakapiya = (function () {
     //                 let objVal = object[path.shift()]
     //                 res.push(objVal)
     //             }
-
     //             return res
-
     //         }
     //     }
     // }
@@ -586,6 +585,8 @@ var kakapiya = (function () {
 
     // no test
     function filter(collection, predicate = identity) {
+
+
     }
 
 
@@ -669,7 +670,7 @@ var kakapiya = (function () {
         groupBy,
         identity,
         isMatch,
-        property
+        // property,
     }
 })()
 
