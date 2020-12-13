@@ -551,31 +551,31 @@ var kakapiya = (function () {
         return true
     }
 
-    function property(path) {
-        if (theTypeOf(path) == "array") {
-            return function f(object, res = [], path = path) {
-                while (path.length) {
-                    let objVal = object[path.shift()]
-                    res.push(objVal)
-                }
-                return res
+    // function property(path) {
+    //     if (theTypeOf(path) == "array") {
+    //         return function f(object, res = [], path = path) {
+    //             while (path.length) {
+    //                 let objVal = object[path.shift()]
+    //                 res.push(objVal)
+    //             }
+    //             return res
 
-            }
-        }
+    //         }
+    //     }
 
-        if (theTypeOf(path) == "string") {
-            return function f(object, res = [], path = path) {
-                path = path.split(".")
-                while (path.length) {
-                    let objVal = object[path.shift()]
-                    res.push(objVal)
-                }
+    //     if (theTypeOf(path) == "string") {
+    //         return function f(object, res = [], path = path) {
+    //             path = path.split(".")
+    //             while (path.length) {
+    //                 let objVal = object[path.shift()]
+    //                 res.push(objVal)
+    //             }
 
-                return res
+    //             return res
 
-            }
-        }
-    }
+    //         }
+    //     }
+    // }
 
 
 
@@ -691,5 +691,5 @@ var kakapiya = (function () {
 // var other = { 'a': 1, "b": 2 };
 // kakapiya.isEqual(object, other);
 
-let f1 = kakapiya.property("a.b")
-let res = f1(({ 'a': { 'b': 2 } }))
+// let f1 = kakapiya.property("a.b")
+// let res = f1(({ 'a': { 'b': 2 } }))
