@@ -1,5 +1,4 @@
 var kakapiya = (function () {
-
     function theTypeOf(e) {
         if (typeof e == "number") return "number"
         if (typeof e == "string") return "string"
@@ -7,11 +6,9 @@ var kakapiya = (function () {
         if (Array.isArray(e)) return "array"
         if (typeof e == "object") return "object"
     }
-
     function maxLength(a1, a2) {
         return a1.length > a2.length ? a1.length : a2.length
     }
-
     //分组
     function chunk(arr, size = 1) {
         let res = []
@@ -71,14 +68,18 @@ var kakapiya = (function () {
             other = args[0]
             iteratee = args[0]
         }
-
-
         for (e of other) {
             if (theTypeOf(e) == "array" || theTypeOf(e) == "object") {
                 other1.push(...e)
             } else {
                 other1.push(e)
             }
+        }
+
+        //如果是字符串，就改造成函数
+        if (theTypeOf(iteratee) == "string") {
+            let key = iteratee
+            iteratee = property(key)
         }
 
         if (theTypeOf(iteratee) == "function") {
@@ -98,10 +99,6 @@ var kakapiya = (function () {
             }
             return res
         }
-
-
-
-
 
 
     };
@@ -532,73 +529,6 @@ var kakapiya = (function () {
         return true
     }
 
-
-    function matches(source) {
-        return function f(object) {
-            for (e in source) {
-                if (!isEqual(object[e], source[e])) return false
-            }
-            return true
-        }
-
-    }
-
-    function matchesProperty(path, srcValue) {
-        for (e of path) {
-            if (isEqual(e, srcValue)) {
-
-            }
-        }
-        return true
-    }
-
-    // function property(path) {
-    //     if (theTypeOf(path) == "array") {
-    //         return function f(object, res = [], path = path) {
-    //             while (path.length) {
-    //                 let objVal = object[path.shift()]
-    //                 res.push(objVal)
-    //             }
-    //             return res
-
-    //         }
-    //     }
-
-    //     if (theTypeOf(path) == "string") {
-    //         return function f(object, res = [], path = path) {
-    //             path = path.split(".")
-    //             while (path.length) {
-    //                 let objVal = object[path.shift()]
-    //                 res.push(objVal)
-    //             }
-    //             return res
-    //         }
-    //     }
-    // }
-
-
-
-    function map() {
-
-    }
-
-
-    // no test
-    function filter(collection, predicate = identity) {
-
-
-    }
-
-
-    function find(collection, predicate, fromIndex = 0) {
-        for (let i = fromIndex; i < arr.length; i++) {
-            if (predicate(arr[i])) {
-                return arr[i]
-            }
-        }
-        return undefined
-    }
-
     function dropWhile(arr, predicate) {
         let count = 0
 
@@ -625,6 +555,154 @@ var kakapiya = (function () {
     function dropRightWhile(arr, predicate) {
 
     }
+
+
+    // pass
+    function property(path) {
+        if (!Array.isArray(path)) {
+            path = path.split(".")
+        }
+        return function (object) {
+            let res = object;
+            for (let i = 0; i < path.length; i++) {
+                res = res[path[i]]
+            }
+            return res
+        }
+    }
+
+    // no test
+    function map(collection, iteratee = identity, res = []) {
+        let key = iteratee
+
+        //一律改造成函数
+        if (theTypeOf(iteratee) == "array") {
+            iteratee = matchesProperty(key)
+        }
+        if (theTypeOf(iteratee) == "object") {
+            iteratee = matches(key)
+        }
+        if (theTypeOf(iteratee) == "string") {
+            iteratee = property(key)
+        }
+
+        if (theTypeOf(collection) == "object") {
+            for (e in collection) {
+                res.push(iteratee(collection[e]))
+            }
+        }
+        if (theTypeOf(collection) == "array") {
+            for (e of collection) {
+                res.push(iteratee(e))
+            }
+        }
+        return res
+    }
+
+    // no test
+    function matches(source) {
+        return function (object) {
+            //判断有这个属性值的对象
+            //判断source的属性值和object中的属性值是否相等
+            for (key in source) {
+                if (!isEqual(source[key], object[key])) {
+                    return false
+                }
+            }
+            return true
+        }
+    }
+
+    // no test
+    //
+    function matchesProperty(path, srcValue) {
+        //一个参数，只有可能是类似键值对数组:['active', false]
+        if (arguments.length == 1) {
+            if (Array.isArray(arguments[0])) {
+                srcValue = path[1]
+                path = path[0]
+            }
+        }
+        return function (object) {
+            let val = property(path)(object)
+            return (val == srcValue)
+        }
+    }
+
+    // pass
+    function filter(collection, predicate = identity) {
+        let key = predicate
+        //一律改造成函数
+        if (theTypeOf(predicate) == "array") {
+            predicate = matchesProperty(key)
+        }
+        if (theTypeOf(predicate) == "object") {
+            predicate = matches(key)
+        }
+        if (theTypeOf(predicate) == "string") {
+            predicate = property(key)
+        }
+
+        //改造完的函数
+        let predicate_final = e => {
+            if (predicate(e)) {
+                res.push(e)
+            } else {
+                return false
+            }
+        }
+        let res_script = map(collection, predicate_final, res = [])
+
+        let final_res = []
+        for (let i = 0; i < res_script.length; i++) {
+            if (res_script[i]) {
+                final_res.push(res_script[i])
+            }
+        }
+        return final_res
+
+    }
+
+    //[fromIndex) no test
+    function find(collection, predicate, fromIndex = 0, res) {
+        let key = predicate
+        let index = -fromIndex
+
+        if (theTypeOf(predicate) == "array") {
+            predicate = matchesProperty(key)
+        }
+
+        if (theTypeOf(predicate) == "object") {
+            predicate = matches(key)
+        }
+
+        if (theTypeOf(predicate) == "string") {
+            predicate = property(key)
+        }
+
+        if (theTypeOf(collection) == "object") {
+            for (e in collection) {
+                if (predicate(collection[e]) && index >= 0) {
+                    res = collection[e]
+                    break
+                } else {
+                    index++
+                }
+            }
+        }
+        if (theTypeOf(collection) == "array") {
+            for (e of collection) {
+                if (predicate(e) && index >= 0) {
+                    res = e
+                    break
+                } else {
+                    index++
+                }
+            }
+        }
+        return res
+    }
+
     return {
         compact,
         chunk,
@@ -650,12 +728,6 @@ var kakapiya = (function () {
         some,
         dropWhile,
         dropRightWhile,
-        isEqual,
-
-        // matches,
-        // matchesProperty,
-        // property,
-
         //待调试
         every,
         filter,
@@ -670,27 +742,11 @@ var kakapiya = (function () {
         groupBy,
         identity,
         isMatch,
-        // property,
+        property,
+        matches,
+        matchesProperty,
+        property,
+        isEqual,
     }
 })()
 
-
-// kakapiya.chunk(['a', 'b', 'c', 'd'], 2);
-// kakapiya.difference([1, 2, 3, 4, 5, 6, 7, 8], [1, 3], [4, 8], [6])
-// kakapiya.join([2, 1, 2, 3], "~");
-// kakapiya.lastIndexOf([1, 2, 1, 2], 2);
-// kakapiya.sortedIndex([1, 2, 2, 2, 2, 3], 2);
-
-// kakapiya.flatten([1, [2, [3, [4]], 5]])
-// kakapiya.flattenDeep([1, [2, [3, [4]], 5, [6, [7, 8]]]])
-// kakapiya.differenceBy([{ "x": 2 }, { "x": 1 }], [{ "x": 1 }], "x")
-// kakapiya.isEqual([{}, {}], [{}, {}])
-// let res = kakapiya.differenceBy([1, 2, 3, 4], [2, 3, 4, 5])
-// kakapiya.differenceBy([1,2,3,4,5,6,7,8],[1,3],[4,8],[6],it => it)
-// kakapiya.differenceWith([{ "x": 1, "y": 2 }, { "x": 2, "y": 1 }], [{ "x": 1, "y": 2 }], kakapiya.isEqual)
-// var object = { 'a': 1, "c": 4 };
-// var other = { 'a': 1, "b": 2 };
-// kakapiya.isEqual(object, other);
-
-// let f1 = kakapiya.property("a.b")
-// let res = f1(({ 'a': { 'b': 2 } }))
