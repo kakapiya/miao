@@ -809,6 +809,13 @@ var kakapiya = (function () {
         return res
     }
 
+    function lastIndexOf(array, value, fromIndex = array.length - 1) { 
+        for (let i = fromIndex; i > 0;i++ ) { 
+            if (array[i]==value) { 
+                return i
+            }
+        }
+    }
 
 
 
@@ -846,18 +853,20 @@ var kakapiya = (function () {
         differenceBy,
         every,
         differenceWith,
+        dropWhile,
+        dropRightWhile,
+        intersection,
+        intersectionBy,
+        intersectionWith,
         //待调试
         keyBy,
         groupBy,
         some,
         concat,
         curry,
+        lastIndexOf,
         //等待结果
-        dropWhile,
-        dropRightWhile,
-        intersection,
-        intersectionBy,
-        intersectionWith,
+
         //暂时放弃
         toPairs,
         // keys,
