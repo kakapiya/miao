@@ -576,15 +576,15 @@ var kakapiya = (function () {
         } else if (theTypeOf(predicate) == "string") {
             predicate = property(key)
         }
-        for (e of arr) {
-            if (predicate(e)) {
+        for (let i = arr.length - 1; i >= 0; i--) {
+            if (predicate(arr[i])) {
                 count++
             } else {
                 break
             }
         }
         //去除array中从 predicate 返回假值开始到尾部的部分
-        return dropRight(arr.length - count)
+        return arr.splice(0, arr.length - count)
     }
 
 
@@ -847,9 +847,6 @@ var kakapiya = (function () {
         every,
         differenceWith,
         //待调试
-        intersection,
-        intersectionBy,
-        intersectionWith,
         keyBy,
         groupBy,
         some,
@@ -858,6 +855,9 @@ var kakapiya = (function () {
         //等待结果
         dropWhile,
         dropRightWhile,
+        intersection,
+        intersectionBy,
+        intersectionWith,
         //暂时放弃
         toPairs,
         // keys,
@@ -865,6 +865,3 @@ var kakapiya = (function () {
 
     }
 })()
-
-
-let r1 = kakapiya.intersectionBy([{ "x": 1 }], [{ "x": 2 }, { "x": 1 }], "x")
