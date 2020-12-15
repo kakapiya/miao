@@ -1,10 +1,6 @@
 var kakapiya = (function () {
     function theTypeOf(e) {
-        if (typeof e == "number") return "number"
-        if (typeof e == "string") return "string"
-        if (typeof e == "function") return "function"
-        if (Array.isArray(e)) return "array"
-        if (typeof e == "object") return "object"
+        return Object.prototype.toString.call(e).replace("[object ", "").replace("]", "").toLowerCase()
     }
     function maxLength(a1, a2) {
         return a1.length > a2.length ? a1.length : a2.length
@@ -105,15 +101,20 @@ var kakapiya = (function () {
 
 
     // 找other外的数
-    function differenceWith(arr, ...args) {
-        let res = []
-        let other = args[0]
-        let comparator = args[1]
-
+    function differenceWith(arr, values, comparator) {
+        let result = []
         for (let i = 0; i < arr.length; i++) {
-            if (comparator(arr[i], other[i])) res.push(arr[i])
+            for (let j = 0; j < values.length; j++) {
+                if (comparator(arr[i], values[j])) {
+                    break
+                }
+                if (j == values.length - 1) {
+                    //全部遍历走完，说明arr[i]不在values中
+                    result.push(arr[i])
+                }
+            }
         }
-        return res
+        return result
     };
 
 
@@ -375,6 +376,10 @@ var kakapiya = (function () {
     }
 
     function toPairs(object) {
+        if (theTypeOf(object) == "set" || theTypeOf(object) == "map") {
+            return Array.from(object)
+        }
+
         let res = []
         for (key in object) {
             let item = []
@@ -712,7 +717,6 @@ var kakapiya = (function () {
         compact,
         chunk,
         difference,
-        differenceBy,
         join,
         last,
         lastIndexOf,
@@ -733,29 +737,32 @@ var kakapiya = (function () {
         matchesProperty,
         property,
         isEqual,
-        //待完成
-        some,
-        dropWhile,
-        dropRightWhile,
-        // keys,
-        // values,
-        //待调试
-        every,
         filter,
         find,
-        concat,
-        toPairs,
         fromPairs,
         flattenDeep,
         flattenDepth,
-        keyBy,
-        curry,
-        groupBy,
         identity,
         isMatch,
+        differenceBy,
+        every,
+        //待调试
         differenceWith,
+        dropWhile,
+        dropRightWhile,
+        keyBy,
+        groupBy,
+        some,
+        concat,
+        curry,
+
+        //暂时放弃
+        toPairs,
+        // keys,
+        // values,
 
     }
 })()
 
-let r1 = kakapiya.isEqual({ "a": 1, "b": 2 }, { "a": 1, "b": 2, "c": 3 })
+
+let r1 = kakapiya.differenceWith([{ "x": 1, "y": 2 }, { "x": 2, "y": 1 }], [{ "x": 1, "y": 2 }], function (n, t) { return Nt(n, t); })
