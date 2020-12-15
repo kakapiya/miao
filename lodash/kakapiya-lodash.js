@@ -133,21 +133,6 @@ var kakapiya = (function () {
 
     }
 
-    function lastIndexOf(arr, val, ...args) {
-        let from = 0
-        if (args.length > 0) {
-            from = args[0]
-            if (from <= 0) return -1
-        }
-        for (let i = arr.length - 1 - from; i >= 0; i--) {
-            if (arr[i] == val) {
-                return i
-            }
-        }
-        return -1
-    }
-
-
 
     function fill(arr, val, ...args) {
         let start = 0
@@ -809,9 +794,9 @@ var kakapiya = (function () {
         return res
     }
 
-    function lastIndexOf(array, value, fromIndex = array.length - 1) { 
-        for (let i = fromIndex; i > 0;i++ ) { 
-            if (array[i]==value) { 
+    function lastIndexOf(array, value, fromIndex = array.length - 1) {
+        for (let i = fromIndex; i > 0; i++) {
+            if (array[i] == value) {
                 return i
             }
         }
@@ -864,7 +849,6 @@ var kakapiya = (function () {
         some,
         concat,
         curry,
-        lastIndexOf,
         //等待结果
 
         //暂时放弃
