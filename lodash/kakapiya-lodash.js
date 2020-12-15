@@ -734,6 +734,84 @@ var kakapiya = (function () {
         return res
     }
 
+    //非引用类型交集
+    //无重复元素
+    function intersection(...arrays) {
+        let res = []
+        //假设第一个数组就是交集
+        let nums = {}
+        arrays[0].forEach(e => {
+            nums[e] = 1
+        })
+        for (let i = 1; i < arrays.length; i++) {
+            for (let j = 0; j < arrays[i].length; j++) {
+                //不在第一个数组里
+                if (nums[arrays[i][j]]) {
+                    nums[arrays[i][j]]++
+                }
+            }
+        }
+        //计数小于数组长度则非交集
+        for (k in nums) {
+            if (nums[k] == arrays.length) {
+                res.push(+k)
+            }
+        }
+        return res
+    }
+
+    function intersectionBy(arrays, iteratee = identity) {
+        let res = []
+        //假设第一个数组就是交集
+        let nums = {}
+        arguments = Array.from(arguments)
+        arrays = arguments.slice(0, arguments.length - 1)
+        iteratee = arguments.slice(-1)[0]
+        if (theTypeOf(iteratee) == "string") {
+            iteratee = property(iteratee)
+        }
+        arrays[0].forEach(e => {
+            nums[iteratee(e)] = 1
+        })
+        //预期：1增加
+        for (let i = 1; i < arrays.length; i++) {
+            for (let j = 0; j < arrays[i].length; j++) {
+                //不在第一个数组里
+                if (nums[iteratee(arrays[i][j])]) {
+                    nums[iteratee(arrays[i][j])]++
+                }
+            }
+        }
+        //计数小于数组长度则非交集
+        for (k of arrays[0]) {
+            if (theTypeOf(k) == "object") {
+                if (nums[iteratee(k)] == arrays.length) {
+                    res.push(k)
+                }
+            } else if (nums[iteratee(+k)] == arrays.length) {
+                res.push(+k)
+            }
+        }
+        return res
+    }
+
+    function intersectionWith(arr, arrs, comparator) {
+        let res = []
+        for (let i = 0; i < arr.length; i++) {
+            let itemA = arr[i]
+            for (let j = 0; j < arrs.length; j++) {
+                let itemB = arrs[j]
+                if (comparator(itemA, itemB) && !res.includes(itemA)) {
+                    res.push(itemA)
+                }
+            }
+        }
+        return res
+    }
+
+
+
+
     return {
         compact,
         chunk,
@@ -769,14 +847,17 @@ var kakapiya = (function () {
         every,
         differenceWith,
         //待调试
-        dropWhile,
-        dropRightWhile,
+        intersection,
+        intersectionBy,
+        intersectionWith,
         keyBy,
         groupBy,
         some,
         concat,
         curry,
-
+        //等待结果
+        dropWhile,
+        dropRightWhile,
         //暂时放弃
         toPairs,
         // keys,
@@ -786,4 +867,4 @@ var kakapiya = (function () {
 })()
 
 
-let r1 = kakapiya.dropWhile([1,2,3,4,5,6],it => it == 5)
+let r1 = kakapiya.intersectionBy([{ "x": 1 }], [{ "x": 2 }, { "x": 1 }], "x")
