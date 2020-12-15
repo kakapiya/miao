@@ -498,6 +498,11 @@ var kakapiya = (function () {
     // unfinished
     function isEqual(val, other) {
         if (theTypeOf(val) !== theTypeOf(other)) return false
+        if (theTypeOf(val) == "object") {
+            if (Object.keys(val).length != Object.keys(other).length) {
+                return false
+            }
+        }
         if (val.length !== other.length) return false
 
         if (theTypeOf(val) === "array") {
@@ -708,7 +713,6 @@ var kakapiya = (function () {
         chunk,
         difference,
         differenceBy,
-        differenceWith,
         join,
         last,
         lastIndexOf,
@@ -724,10 +728,17 @@ var kakapiya = (function () {
         sortedIndex,
         fill,
         toArray,
+        property,
+        matches,
+        matchesProperty,
+        property,
+        isEqual,
         //待完成
         some,
         dropWhile,
         dropRightWhile,
+        // keys,
+        // values,
         //待调试
         every,
         filter,
@@ -742,11 +753,9 @@ var kakapiya = (function () {
         groupBy,
         identity,
         isMatch,
-        property,
-        matches,
-        matchesProperty,
-        property,
-        isEqual,
+        differenceWith,
+
     }
 })()
 
+let r1 = kakapiya.isEqual({ "a": 1, "b": 2 }, { "a": 1, "b": 2, "c": 3 })
