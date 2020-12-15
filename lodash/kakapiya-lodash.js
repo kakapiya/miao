@@ -147,24 +147,7 @@ var kakapiya = (function () {
         return -1
     }
 
-    function drop(arr, n = 1) {
-        if (n >= arr.length) return []
 
-        let res = []
-        for (let i = n; i < arr.length; i++) {
-            res.push(arr[i])
-        }
-        return res
-    }
-
-    function dropRight(arr, n = 1) {
-        if (n >= arr.length) return []
-        let res = []
-        for (let i = 0; i < arr.length - n; i++) {
-            res.push(arr[i])
-        }
-        return res
-    }
 
     function fill(arr, val, ...args) {
         let start = 0
@@ -539,15 +522,59 @@ var kakapiya = (function () {
         return true
     }
 
-    function dropWhile(arr, predicate) {
-        let count = 0
+    //去除array前面的n个元素
+    function drop(arr, n = 1) {
+        if (n >= arr.length) return []
+        let res = []
+        for (let i = n; i < arr.length; i++) {
+            res.push(arr[i])
+        }
+        return res
+    }
 
+    //去除array尾部的n个元素。
+    function dropRight(arr, n = 1) {
+        if (n >= arr.length) return []
+        let res = []
+        for (let i = 0; i < arr.length - n; i++) {
+            res.push(arr[i])
+        }
+        return res
+    }
+
+    //去除array中从起点开始到 predicate 返回假值结束部分
+    function dropWhile(arr, predicate = identity) {
+        let count = 0
+        let key = predicate
         if (theTypeOf(predicate) == "object") {
-            predicate = matches
+            predicate = matches(key)
         } else if (theTypeOf(predicate) == "array") {
-            predicate = matchesProperty
+            predicate = matchesProperty(key)
         } else if (theTypeOf(predicate) == "string") {
-            predicate = property
+            predicate = property(key)
+        }
+
+        for (e of arr) {
+            if (predicate(e)) {
+                count++
+            } else {
+                break
+            }
+        }
+        //去除array中从起点开始到 predicate 返回假值结束
+        return drop(arr, count)
+    }
+
+    //去除array中从 predicate 返回假值开始到尾部的部分
+    function dropRightWhile(arr, predicate = identity) {
+        let count = 0
+        let key = predicate
+        if (theTypeOf(predicate) == "object") {
+            predicate = matches(key)
+        } else if (theTypeOf(predicate) == "array") {
+            predicate = matchesProperty(key)
+        } else if (theTypeOf(predicate) == "string") {
+            predicate = property(key)
         }
         for (e of arr) {
             if (predicate(e)) {
@@ -556,14 +583,8 @@ var kakapiya = (function () {
                 break
             }
         }
-        return drop(arr, count)
-
-
-
-    }
-
-    function dropRightWhile(arr, predicate) {
-
+        //去除array中从 predicate 返回假值开始到尾部的部分
+        return dropRight(arr.length - count)
     }
 
 
@@ -746,8 +767,8 @@ var kakapiya = (function () {
         isMatch,
         differenceBy,
         every,
-        //待调试
         differenceWith,
+        //待调试
         dropWhile,
         dropRightWhile,
         keyBy,
@@ -765,4 +786,4 @@ var kakapiya = (function () {
 })()
 
 
-let r1 = kakapiya.differenceWith([{ "x": 1, "y": 2 }, { "x": 2, "y": 1 }], [{ "x": 1, "y": 2 }], function (n, t) { return Nt(n, t); })
+let r1 = kakapiya.dropWhile([1,2,3,4,5,6],it => it == 5)
