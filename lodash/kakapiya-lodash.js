@@ -784,11 +784,100 @@ var kakapiya = (function () {
         }
         for (let i = fromIndex; i > 0; i++) {
             if (array[i] == value) {
-                return i-fromIndex
+                return i - fromIndex
             }
         }
         return -1
     }
+    //获取array数组的第n个元素
+    function nth(array, n = 0) {
+        let index = n > 0 ? n : array.length + n
+        return array[index]
+    }
+
+    //移除数组中predicate（断言）返回为真值的所有元素，并返回移除元素组成的数组
+    function remove(array, predicate = identity) {
+        let s = 0;
+        let res = []
+        for (let f = 0; f < array.length; f++) {
+            if (!predicate(array[f], f, array)) {
+                array[s++] = array[f]
+            } else {
+                res.push(array[f])
+            }
+        }
+        array.length = s
+        return res
+    }
+
+    //创建一个剔除所有给定值的新数组，剔除值的时候，使用SameValueZero做相等比较。
+    function without(array, ...values) {
+        let res = []
+
+        for (let i = 0; i < array.length; i++) {
+            if (!values.includes(array[i])) {
+                res.push(array[i])
+            }
+        }
+        return res
+    }
+
+
+    // /移除数组array中所有和给定值相等的元素，使用SameValueZero【0/-0 不区分】进行全等比较。
+    function pull(array, ...values) {
+        let s = 0;
+        for (let f = 0; f < array.length; f++) {
+            if (!values.includes(array[f])) {
+                array[s++] = array[f]
+            }
+        }
+        array.length = s
+    }
+
+    function pullAll(array, values) {
+        let s = 0;
+        for (let f = 0; f < array.length; f++) {
+            if (!values.includes(array[f])) {
+                array[s++] = array[f]
+            }
+        }
+        array.length = s
+    }
+
+    function pullAllBy(array, values, iteratee = identity) {
+        let s = 0;
+
+        let key = iteratee
+        if (theTypeOf(iteratee) == "object") {
+            iteratee = matches(key)
+        } else if (theTypeOf(iteratee) == "array") {
+            iteratee = matchesProperty(key)
+        } else if (theTypeOf(iteratee) == "string") {
+            iteratee = property(key)
+        }
+        let values_plus = values.map(e => {
+            return iteratee(e)
+        })
+        for (let f = 0; f < array.length; f++) {
+            if (!values_plus.includes(iteratee(array[f]))) {
+                array[s++] = array[f]
+            }
+        }
+        array.length = s
+    }
+
+    function pullAllWith(array, values, comparator) {
+        let s = 0;
+        for (let f = 0; f < array.length; f++) {
+            for (let i = 0; i < values.length; i++) {
+                if (!comparator(array[f], values[i])) {
+                    array[s++] = array[f]
+                }
+            }
+        }
+        array.length = s
+    }
+
 
 
 
@@ -837,6 +926,11 @@ var kakapiya = (function () {
         some,
         concat,
         curry,
+        nth,
+        pull,
+        pullAll,
+        pullAllBy,
+        pullAllWith,
         //等待结果
 
         //暂时放弃
@@ -848,4 +942,3 @@ var kakapiya = (function () {
 })()
 
 
-// let res1 = kakapiya.lastIndexOf([1,2,1,2],2,-22)
