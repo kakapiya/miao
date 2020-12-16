@@ -782,9 +782,9 @@ var kakapiya = (function () {
         if (fromIndex < 0) {
             fromIndex = array.length + fromIndex;
         }
-        for (let i = fromIndex; i > 0; i++) {
+        for (let i = fromIndex; i >= 0; i--) {
             if (array[i] == value) {
-                return i - fromIndex
+                return i
             }
         }
         return -1
@@ -832,6 +832,7 @@ var kakapiya = (function () {
             }
         }
         array.length = s
+        return array
     }
 
     function pullAll(array, values) {
@@ -842,6 +843,8 @@ var kakapiya = (function () {
             }
         }
         array.length = s
+        return array
+
     }
 
     function pullAllBy(array, values, iteratee = identity) {
@@ -864,6 +867,9 @@ var kakapiya = (function () {
             }
         }
         array.length = s
+
+        return array
+
     }
 
     function pullAllWith(array, values, comparator) {
@@ -876,6 +882,9 @@ var kakapiya = (function () {
             }
         }
         array.length = s
+
+        return array
+
     }
 
 
@@ -926,13 +935,12 @@ var kakapiya = (function () {
         some,
         concat,
         curry,
+        //等待结果
         nth,
         pull,
         pullAll,
         pullAllBy,
         pullAllWith,
-        //等待结果
-
         //暂时放弃
         toPairs,
         // keys,
@@ -942,3 +950,4 @@ var kakapiya = (function () {
 })()
 
 
+let res = kakapiya.lastIndexOf([1,2,1,2],2,-22)
