@@ -339,8 +339,9 @@ var kakapiya = (function () {
     }
 
     function concat(arr, ...args) {
-        arr.push.apply(arr, ...args)
-        return arr
+        res = []
+        res.push.apply(arr, ...args)
+        return res
     }
 
     function toPairs(object) {
@@ -403,32 +404,14 @@ var kakapiya = (function () {
 
     function groupBy(collection, iteratee) {
         let res = {}
-        if (typeof iteratee == "function") {
-            for (let i = 0; i < collection.length; i++) {
-                let key = iteratee(collection[i])
-                if (!res[collection[i][key]]) {
-                    res[collection[i][key]] = [collection[i]]
-                } else {
-                    res[collection[i][key]].push(collection[i])
-                }
-
+        for (let i = 0; i < collection.length; i++) {
+            let key = iteratee(collection[i], i, collection)
+            if (!Array.isArray(res[key])) {
+                res[key] = []
             }
-            return res
+            res[key].push(collection[i])
         }
-
-        if (typeof iteratee == "string") {
-            let key = iteratee;
-            for (let i = 0; i < collection.length; i++) {
-                //res对象的collection[i][key]键对应的值（数组）
-                //res[one[length]]
-                if (!res[collection[i][key]]) {
-                    res[collection[i][key]] = [collection[i]]
-                } else {
-                    res[collection[i][key]].push(collection[i])
-                }
-            }
-            return res
-        }
+        return res
     }
 
     function keyBy(collection, iteratee) {
@@ -795,11 +778,16 @@ var kakapiya = (function () {
     }
 
     function lastIndexOf(array, value, fromIndex = array.length - 1) {
+        if (!array.length) return -1;
+        if (fromIndex < 0) {
+            fromIndex = array.length + fromIndex;
+        }
         for (let i = fromIndex; i > 0; i++) {
             if (array[i] == value) {
-                return i
+                return i-fromIndex
             }
         }
+        return -1
     }
 
 
@@ -858,3 +846,6 @@ var kakapiya = (function () {
 
     }
 })()
+
+
+// let res1 = kakapiya.lastIndexOf([1,2,1,2],2,-22)
