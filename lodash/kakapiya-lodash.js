@@ -896,6 +896,7 @@ var kakapiya = (function () {
     }
 
     function takeRight(array, n = 1) {
+        if(n>array.length) return array
         return array.slice(array.length - n, array.length)
     }
 
@@ -1014,17 +1015,4 @@ var users = [
 
 
 
-let res = kakapiya.takeRightWhile(users, function (o) { return !o.active; });
-// => objects for ['fred', 'pebbles']
-
-// The `kakapiya.matches` iteratee shorthand.
-res = kakapiya.takeRightWhile(users, { 'user': 'pebbles', 'active': false });
-// => objects for ['pebbles']
-
-// The `kakapiya.matchesProperty` iteratee shorthand.
-res = kakapiya.takeRightWhile(users, ['active', false]);
-// => objects for ['fred', 'pebbles']
-
-// The `kakapiya.property` iteratee shorthand.
-res = kakapiya.takeRightWhile(users, 'active');
-// => []
+let res = kakapiya.takeRight([1,2,3],5)
