@@ -886,8 +886,59 @@ var kakapiya = (function () {
         return array
 
     }
+    //获取除了array数组第一个元素以外的全部元素。
+    function tail(array) {
+        return array.slice(1, array.length)
+    }
 
+    function take(array, n = 1) {
+        return array.slice(0, n)
+    }
 
+    function takeRight(array, n = 1) {
+        return array.slice(array.length - n, array.length)
+    }
+
+    //到 predicate 返回假值。predicate 会传入三个参数： (value, index, array)。
+    function takeRightWhile(array, predicate = identity) {
+
+        let key = predicate
+        if (theTypeOf(predicate) == "object") {
+            predicate = matches(key)
+        } else if (theTypeOf(predicate) == "array") {
+            predicate = matchesProperty(key)
+        } else if (theTypeOf(predicate) == "string") {
+            predicate = property(key)
+        }
+
+        for (let i = array.length - 1; i >= 0; i--) {
+            if (!predicate(array[i], i, array)) {
+                if (i + 1 == array.length) return []
+                return array.slice(i + 1, array.length)
+            }
+        }
+        return array
+    }
+
+    function takeWhile(array, predicate = identity) {
+
+        let key = predicate
+        if (theTypeOf(predicate) == "object") {
+            predicate = matches(key)
+        } else if (theTypeOf(predicate) == "array") {
+            predicate = matchesProperty(key)
+        } else if (theTypeOf(predicate) == "string") {
+            predicate = property(key)
+        }
+
+        for (let i = 0; i < array.length; i++) {
+            if (!predicate(array[i], i, array)) {
+                return array.slice(0, i)
+            }
+        }
+        return array
+
+    }
 
 
     return {
@@ -929,6 +980,11 @@ var kakapiya = (function () {
         intersection,
         intersectionBy,
         intersectionWith,
+        nth,
+        pull,
+        pullAll,
+        pullAllBy,
+        pullAllWith,
         //待调试
         keyBy,
         groupBy,
@@ -936,11 +992,12 @@ var kakapiya = (function () {
         concat,
         curry,
         //等待结果
-        nth,
-        pull,
-        pullAll,
-        pullAllBy,
-        pullAllWith,
+        tail,
+        take,
+        takeRight,
+        takeRightWhile,
+        takeWhile,
+
         //暂时放弃
         toPairs,
         // keys,
@@ -949,5 +1006,25 @@ var kakapiya = (function () {
     }
 })()
 
+var users = [
+    { 'user': 'barney', 'active': true },
+    { 'user': 'fred', 'active': false },
+    { 'user': 'pebbles', 'active': false }
+];
 
-let res = kakapiya.lastIndexOf([1,2,1,2],2,-22)
+
+
+let res = kakapiya.takeRightWhile(users, function (o) { return !o.active; });
+// => objects for ['fred', 'pebbles']
+
+// The `kakapiya.matches` iteratee shorthand.
+res = kakapiya.takeRightWhile(users, { 'user': 'pebbles', 'active': false });
+// => objects for ['pebbles']
+
+// The `kakapiya.matchesProperty` iteratee shorthand.
+res = kakapiya.takeRightWhile(users, ['active', false]);
+// => objects for ['fred', 'pebbles']
+
+// The `kakapiya.property` iteratee shorthand.
+res = kakapiya.takeRightWhile(users, 'active');
+// => []
