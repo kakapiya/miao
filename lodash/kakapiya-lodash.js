@@ -896,7 +896,7 @@ var kakapiya = (function () {
     }
 
     function takeRight(array, n = 1) {
-        if(n>array.length) return array
+        if (n > array.length) return array
         return array.slice(array.length - n, array.length)
     }
 
@@ -1015,4 +1015,4 @@ var users = [
 
 
 
-let res = kakapiya.takeRight([1,2,3],5)
+let res = kakapiya.takeRight([1, 2, 3], 5)
