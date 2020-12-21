@@ -941,6 +941,66 @@ var kakapiya = (function () {
 
     }
 
+    // 创建一个按顺序排列的唯一值的数组。
+    function union(...arrays) {
+        let res = []
+        arrays.forEach(element => {
+            return element.forEach(e => {
+                if (res.includes(e)) return
+                res.push(e)
+            })
+        });
+        return res
+    }
+
+    function unionBy(arrays, iteratee = identity) {
+        let res = []
+        arguments = Array.from(arguments)
+        iteratee = arguments.pop()
+        arrays = arguments
+
+        let key = iteratee
+        if (theTypeOf(iteratee) == "object") {
+            iteratee = matches(key)
+        } else if (theTypeOf(iteratee) == "array") {
+            iteratee = matchesProperty(key)
+        } else if (theTypeOf(iteratee) == "string") {
+            iteratee = property(key)
+        }
+
+        let res_plus = []
+        for (let i = 0; i < arrays.length; i++) {
+            for (let j = 0; j < arrays[i].length; j++) {
+                if (res_plus.includes(iteratee(arrays[i][j]))) break
+                res_plus.push(iteratee(arrays[i][j]))
+                res.push((arrays[i][j]))
+            }
+        }
+
+        return res
+    }
+
+    function unionWith(arrays, comparator) {
+        let res = []
+        arguments = Array.from(arguments)
+        comparator = arguments.pop()
+        arrays = arguments
+        res.push.apply(res, arrays[0])
+        for (let i = 0; i < arrays[0].length; i++) {
+            let flag = 1
+            for (let j = 0; j < res.length; j++) {
+                //arrays[1][i]能否并入array[0]
+                if (comparator(arrays[1][i], res[j])) {
+                    //有等于 则这个数无法放入
+                    flag = 0
+                    break
+                }
+            }
+            if (flag) res.push(arrays[1][i])
+        }
+        return res
+    }
+
 
     return {
         compact,
@@ -986,18 +1046,22 @@ var kakapiya = (function () {
         pullAll,
         pullAllBy,
         pullAllWith,
+        tail,
+        take,
+        takeRight,
+        takeRightWhile,
+        takeWhile,
         //待调试
+        union,
+        unionBy,
+        unionWith,
         keyBy,
         groupBy,
         some,
         concat,
         curry,
         //等待结果
-        tail,
-        take,
-        takeRight,
-        takeRightWhile,
-        takeWhile,
+
 
         //暂时放弃
         toPairs,
@@ -1006,13 +1070,3 @@ var kakapiya = (function () {
 
     }
 })()
-
-var users = [
-    { 'user': 'barney', 'active': true },
-    { 'user': 'fred', 'active': false },
-    { 'user': 'pebbles', 'active': false }
-];
-
-
-
-let res = kakapiya.takeRight([1, 2, 3], 5)
