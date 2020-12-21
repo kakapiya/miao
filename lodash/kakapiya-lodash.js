@@ -2,8 +2,23 @@ var kakapiya = (function () {
     function theTypeOf(e) {
         return Object.prototype.toString.call(e).replace("[object ", "").replace("]", "").toLowerCase()
     }
-    function maxLength(a1, a2) {
-        return a1.length > a2.length ? a1.length : a2.length
+
+    function shorthand(predicate) {
+        
+        if (theTypeOf(predicate) == "function") {
+            return predicate
+        }
+        if (theTypeOf(predicate) == "array") {
+            return matchesProperty(predicate)
+        }
+
+        if (theTypeOf(predicate) == "object") {
+            return matches(predicate)
+        }
+
+        if (theTypeOf(predicate) == "string") {
+            return property(predicate)
+        }
     }
     //分组
     function chunk(arr, size = 1) {
@@ -664,21 +679,8 @@ var kakapiya = (function () {
 
     //[fromIndex) no test
     function find(collection, predicate, fromIndex = 0, res) {
-        let key = predicate
         let index = -fromIndex
-
-        if (theTypeOf(predicate) == "array") {
-            predicate = matchesProperty(key)
-        }
-
-        if (theTypeOf(predicate) == "object") {
-            predicate = matches(key)
-        }
-
-        if (theTypeOf(predicate) == "string") {
-            predicate = property(key)
-        }
-
+        predicate = shorthand(predicate)
         if (theTypeOf(collection) == "object") {
             for (e in collection) {
                 if (predicate(collection[e]) && index >= 0) {
@@ -1001,6 +1003,51 @@ var kakapiya = (function () {
         return res
     }
 
+    //创建一个去重后的array数组副本。
+function uniq(array) {
+    let newArray = new Set()
+    for (e of array) {
+        newArray.add(e)
+    }
+    return Array.from(newArray)
+}
+
+
+function uniqBy(array, iteratee, res = []) {
+
+    iteratee = shorthand(iteratee)
+    let newArray = new Set()
+    let last_size = 0
+    for (e of array) {
+        newArray.add(iteratee(e))
+        if (newArray.size > last_size) {
+            res.push(e)
+        }
+        last_size = newArray.size
+    }
+    return res
+}
+
+
+function uniqWith(array, comparator) {
+
+    comparator = shorthand(comparator)
+
+    let res = [array[0]]
+    for (let i = 0; i < array.length; i++) {
+        let flag = 1
+        for (let j = 0; j < res.length; j++) {
+            if (comparator(res[j], array[i])) {
+                flag = 0
+                break
+            }
+            if (flag) res.push(array[i])
+        }
+    }
+
+    return res
+}
+
 
     return {
         compact,
@@ -1051,10 +1098,16 @@ var kakapiya = (function () {
         takeRight,
         takeRightWhile,
         takeWhile,
-        //待调试
         union,
         unionBy,
         unionWith,
+        //待调试
+        uniq,
+        uniqBy,
+        uniqWith,
+
+        // unzip,
+        // unzipWith,
         keyBy,
         groupBy,
         some,
@@ -1070,3 +1123,9 @@ var kakapiya = (function () {
 
     }
 })()
+
+
+    objects = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }, { 'x': 1, 'y': 2 }];
+ 
+let res = kakapiya.uniqWith(objects, kakapiya.isEqual);
+// => [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }]
