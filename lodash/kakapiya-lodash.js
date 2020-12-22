@@ -4,7 +4,7 @@ var kakapiya = (function () {
     }
 
     function shorthand(predicate) {
-        
+
         if (theTypeOf(predicate) == "function") {
             return predicate
         }
@@ -1004,49 +1004,119 @@ var kakapiya = (function () {
     }
 
     //创建一个去重后的array数组副本。
-function uniq(array) {
-    let newArray = new Set()
-    for (e of array) {
-        newArray.add(e)
-    }
-    return Array.from(newArray)
-}
-
-
-function uniqBy(array, iteratee, res = []) {
-
-    iteratee = shorthand(iteratee)
-    let newArray = new Set()
-    let last_size = 0
-    for (e of array) {
-        newArray.add(iteratee(e))
-        if (newArray.size > last_size) {
-            res.push(e)
+    function uniq(array) {
+        let newArray = new Set()
+        for (e of array) {
+            newArray.add(e)
         }
-        last_size = newArray.size
+        return Array.from(newArray)
     }
-    return res
-}
 
 
-function uniqWith(array, comparator) {
+    function uniqBy(array, iteratee, res = []) {
 
-    comparator = shorthand(comparator)
-
-    let res = [array[0]]
-    for (let i = 0; i < array.length; i++) {
-        let flag = 1
-        for (let j = 0; j < res.length; j++) {
-            if (comparator(res[j], array[i])) {
-                flag = 0
-                break
+        iteratee = shorthand(iteratee)
+        let newArray = new Set()
+        let last_size = 0
+        for (e of array) {
+            newArray.add(iteratee(e))
+            if (newArray.size > last_size) {
+                res.push(e)
             }
-            if (flag) res.push(array[i])
+            last_size = newArray.size
         }
+        return res
     }
 
-    return res
-}
+
+    function uniqWith(array, comparator) {
+
+        comparator = shorthand(comparator)
+
+        let res = [array[0]]
+        for (let i = 0; i < array.length; i++) {
+            let flag = 1
+            for (let j = 0; j < res.length; j++) {
+                if (comparator(res[j], array[i])) {
+                    flag = 0
+                    break
+                }
+                if (flag) res.push(array[i])
+            }
+        }
+
+        return res
+    }
+
+
+    //创建一个分组元素的数组，数组的第一个元素包含所有给定数组的第一个元素，数组的第二个元素包含所有给定数组的第二个元素，以此类推
+    function zip(...arrays) {
+        let res = new Array(arrays.length)
+        for (let i = 0; i < res.length; i++) {
+            res[i] = []
+        }
+        for (let i = 0; i < arrays.length; i++) {
+            for (let j = 0; j < arrays[i].length; j++) {
+                res[j].push(arrays[i][j])
+            }
+
+        }
+        return res
+    }
+
+
+    function zipObject(props, values) {
+
+        let res = {}
+        for (let i = 0; i < props.length; i++) {
+            res[props[i]] = values[i]
+
+        }
+        return res
+    }
+
+    function zipObjectDeep(props = [], values = []) {
+        let ret = {};
+        let temp;
+        props = props.map(prop => prop.match(/\w+/g));
+
+        for (let i = 0; i < props.length; i++) {
+            temp = ret
+            let path = props[i]
+            for (let j = 0; j < path.length; j++) {//a b 0 c
+                if (j === paths.length - 1) {
+                    temp[paths[j]] = values[i];
+                    break;
+                }
+                if (temp[paths[j]] === undefined) {//第二次不用再建立对象了
+                    if (theTypeOf(paths[j + 1]) == "number") {
+                        temp[paths[j]] = [];
+                    } else {
+                        temp[paths[j]] = {};
+                    }
+                }
+                temp = temp[paths[j]];
+            }
+        }
+        return ret
+    }
+
+    function zipWith(arrays, iteratee = identity) {
+        let res = []
+        arguments = Array.from(arguments)
+        iteratee = arguments.pop()
+        arrays = arguments
+
+        for (let i = 0; i < arrays[0].length; i++) {
+            let temp = []
+            for (let j = 0; j < arrays.length; j++) {
+                temp.push(arrays[j][i])
+            }
+            res.push(iteratee(...temp))
+        }
+        return res
+    }
+
 
 
     return {
@@ -1101,11 +1171,14 @@ function uniqWith(array, comparator) {
         union,
         unionBy,
         unionWith,
-        //待调试
         uniq,
         uniqBy,
         uniqWith,
-
+        zipObject,
+        //待调试
+        zip,
+        zipObjectDeep,
+        zipWith,
         // unzip,
         // unzipWith,
         keyBy,
@@ -1125,7 +1198,5 @@ function uniqWith(array, comparator) {
 })()
 
 
-    objects = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }, { 'x': 1, 'y': 2 }];
- 
-let res = kakapiya.uniqWith(objects, kakapiya.isEqual);
-// => [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }]
+
+
