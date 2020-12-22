@@ -1051,26 +1051,24 @@ var kakapiya = (function () {
 
     //创建一个分组元素的数组，数组的第一个元素包含所有给定数组的第一个元素，数组的第二个元素包含所有给定数组的第二个元素，以此类推
     function zip(...arrays) {
-        let res = new Array(arrays.length)
-        for (let i = 0; i < res.length; i++) {
-            res[i] = []
-        }
-        for (let i = 0; i < arrays.length; i++) {
-            for (let j = 0; j < arrays[i].length; j++) {
-                res[j].push(arrays[i][j])
+        let res = []
+        for (let i = 0; i < arrays[0].length; i++) {
+            for (let j = 0; j < arrays.length; j++) {
+                if (res[i] == undefined) {
+                    res[i] = [arrays[j][i]]
+                } else {
+                    res[i].push(arrays[j][i])
+                }
             }
-
         }
         return res
     }
 
 
     function zipObject(props, values) {
-
         let res = {}
         for (let i = 0; i < props.length; i++) {
             res[props[i]] = values[i]
-
         }
         return res
     }
@@ -1085,7 +1083,7 @@ var kakapiya = (function () {
             let path = props[i]
             for (let j = 0; j < path.length; j++) {//a b 0 c
                 if (j === paths.length - 1) {
-                    temp[paths[j]] = values[i];
+                    temp[path[j]] = values[i];
                     break;
                 }
                 if (temp[paths[j]] === undefined) {//第二次不用再建立对象了
@@ -1175,10 +1173,11 @@ var kakapiya = (function () {
         uniqBy,
         uniqWith,
         zipObject,
-        //待调试
         zip,
         zipObjectDeep,
         zipWith,
+        //待调试
+
         // unzip,
         // unzipWith,
         keyBy,
@@ -1200,3 +1199,4 @@ var kakapiya = (function () {
 
 
 
+let res = kakapiya.zip(["a", "b"], [1, 2], [true, false])
