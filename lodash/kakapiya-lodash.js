@@ -1137,8 +1137,25 @@ var kakapiya = (function () {
         return res
     }
 
-    function xor(arrays) {
-        return xorBy(arrays, it => it)
+    function without(ary, ...val) {
+        return ary.filter(it => !val.includes(it))
+    }
+
+    function xor(...arrays) {
+        let res = []
+        let map = {}
+        let pool = flatten(arrays)
+
+        for (let item of pool)
+            map[item] = !map[item] ? 1 : map[item] + 1;
+
+        for (let ary of arrays) {
+            ary.forEach(item => {
+                if (map[item] == 1) res.push(item)
+            })
+        }
+
+        return res
     }
 
     function unzip(arrays) {
@@ -1281,12 +1298,14 @@ var kakapiya = (function () {
         zip,
         zipObjectDeep,
         zipWith,
-        //待调试
         xor,
         xorBy,
         unzip,
         unzipWith,
+        without,
         add,
+        //待调试
+
         keyBy,
         groupBy,
         some,
