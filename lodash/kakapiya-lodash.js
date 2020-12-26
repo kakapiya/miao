@@ -1,5 +1,10 @@
 var kakapiya = (function () {
 
+    function isNaN(value) {
+
+        return value !== value
+    }
+
     function theTypeOf(e) {
         if (isNaN(e)) {
             return "NaN"
@@ -1352,6 +1357,7 @@ var kakapiya = (function () {
         curry,
         //等待结果
 
+        isNaN,
 
         //暂时放弃
         toPairs,
@@ -1364,5 +1370,5 @@ var kakapiya = (function () {
 
 
 
-let res = kakapiya.zipObjectDeep(["a.b[0].c", "a.b[1].d"], [1, 2])
-console.log(res.toString());
+let res = kakapiya.differenceBy([2.1, 1.2], [2.3, 3.4], Math.floor)
+
