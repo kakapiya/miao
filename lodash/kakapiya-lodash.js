@@ -1339,11 +1339,10 @@ var kakapiya = (function () {
         flip,
         spread,
         negate,
-        //待调试
         countBy,
+        //待调试
         keyBy,
         groupBy,
-        some,
         concat,
         curry,
         //等待结果
