@@ -1,4 +1,5 @@
 var kakapiya = (function () {
+
     function theTypeOf(e) {
         if (isNaN(e)) {
             return "NaN"
@@ -1359,3 +1360,9 @@ var kakapiya = (function () {
 
     }
 })()
+
+
+
+
+let res = kakapiya.zipObjectDeep(["a.b[0].c", "a.b[1].d"], [1, 2])
+console.log(res.toString());
