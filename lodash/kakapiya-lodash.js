@@ -1115,15 +1115,30 @@ var kakapiya = (function () {
         return res
     }
 
-    function xorBy(arrays, iteratee = identity) {
-        arguments = Array.from(arguments)
-        iteratee = arguments.pop()
-        arrays = arguments
-        let arrays = flattenDeep(arrays)
+    function xorBy(...args) {
+        let iteratee = shorthand(args.pop())
+        let arr = []
+        args.forEach(it => arr.push(...it))
+        let map = new Map()
+        for (let e of arr) {
+            let val = iteratee(e)
+            if (!map.has(val)) {
+                map.set(val, 1)
+            } else {
+                map.set(val, map.get(val) + 1)
+            }
+        }
+
+        let res = []
+        arr.forEach(e => {
+            if (map.get(iteratee(e)) < 2)
+                res.push(e)
+        })
+        return res
     }
 
     function xor(arrays) {
-        return xorBy(arrays)
+        return xorBy(arrays, it => it)
     }
 
     function unzip(arrays) {
