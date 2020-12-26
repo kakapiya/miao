@@ -1119,13 +1119,37 @@ var kakapiya = (function () {
         arguments = Array.from(arguments)
         iteratee = arguments.pop()
         arrays = arguments
-        let arrays = flattenDeep(arrays) 
+        let arrays = flattenDeep(arrays)
     }
 
     function xor(arrays) {
         return xorBy(arrays)
     }
 
+    function unzip(arrays) {
+        let res = []
+        for (let j = 0; j < arrays[0].length; j++) {
+            for (let i = 0; i < arrays.length; i++) {
+                if (res[j] == undefined) {
+                    res[j] = [arrays[i][j]]
+                } else {
+                    res[j].push(arrays[i][j])
+                }
+            }
+        }
+        return res
+    }
+
+    function add(augend = 0, addend = 0) {
+        return augend + addend
+    }
+
+    function unzipWith(ary, predicate) {
+        predicate = shorthand(predicate)
+        ary = unzip(ary)
+        var res = ary.map((it) => predicate(...it))
+        return res
+    }
 
 
     function ary(func, n = func.length) {
@@ -1245,8 +1269,9 @@ var kakapiya = (function () {
         //待调试
         xor,
         xorBy,
-        // unzip,
-        // unzipWith,
+        unzip,
+        unzipWith,
+        add,
         keyBy,
         groupBy,
         some,

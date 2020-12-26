@@ -1,10 +1,4 @@
-function unzip(array) {
 
-}
-
-function unzipWith() {
-
-}
 
 function without() {
     return
@@ -16,4 +10,6 @@ function xorWith() {
 
 }
 
-zipObjectDeep(['a.b[0].c', 'a.b[1].d'], [1, 2]);
+
+
+let res = unzipWith([[1, 10, 100], [2, 20, 200]],add)
