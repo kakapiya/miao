@@ -1254,6 +1254,34 @@ var kakapiya = (function () {
         }
     }
 
+    function countBy(collection, iteratee = identity) {
+        iteratee = shorthand(iteratee)
+        let res = {}
+
+        if (theTypeOf(collection) == "array") {
+            for (e of collection) {
+                if (res[iteratee(e)] == undefined) {
+                    res[iteratee(e)] = 1
+                }
+                else {
+                    res[iteratee(e)]++
+                }
+            }
+        }
+
+        if (theTypeOf(collection) == "object") {
+            for (e of collection) {
+                if (res[iteratee(collection[e])] == undefined) {
+                    res[iteratee(collection[e])] = 1
+                }
+                else {
+                    res[iteratee(collection[e])]++
+                }
+            }
+        }
+        return res
+    }
+
     return {
         compact,
         chunk,
@@ -1327,7 +1355,7 @@ var kakapiya = (function () {
         spread,
         negate,
         //待调试
-
+        countBy,
         keyBy,
         groupBy,
         some,
@@ -1347,4 +1375,4 @@ var kakapiya = (function () {
 
 
 
-let res = kakapiya.xor([2, 1], [2, 3]);
+let res = kakapiya.countBy(['one', 'two', 'three'], 'length');
