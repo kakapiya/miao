@@ -1,6 +1,10 @@
 var kakapiya = (function () {
     function theTypeOf(e) {
-        return Object.prototype.toString.call(e).replace("[object ", "").replace("]", "").toLowerCase()
+        if (isNaN(e)) {
+            return "NaN"
+        } else {
+            return Object.prototype.toString.call(e).replace("[object ", "").replace("]", "").toLowerCase()
+        }
     }
 
     function shorthand(predicate) {
@@ -1074,7 +1078,7 @@ var kakapiya = (function () {
                     break;
                 }
                 if (temp[paths[j]] === undefined) {//第二次不用再建立对象了
-                    if (theTypeOf(paths[j + 1]) == "number") {
+                    if (theTypeOf(+paths[j + 1]) == "number") {
                         temp[paths[j]] = [];
                     } else {
                         temp[paths[j]] = {};
@@ -1355,8 +1359,3 @@ var kakapiya = (function () {
 
     }
 })()
-
-
-
-
-let res = kakapiya.countBy(['one', 'two', 'three'], 'length');
