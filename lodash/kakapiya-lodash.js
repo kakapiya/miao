@@ -1157,7 +1157,22 @@ var kakapiya = (function () {
 
         return res
     }
-
+    function xorWith(...arys) {
+        let predicate = shorthand(arys.pop());
+        let res = [];
+        arys = flatten(arys);
+        for (let i = 0; i < arys.length; i++) {
+            let flag = true;
+            for (let j = 0; j < arys.length; j++) {
+                if (j !== i && predicate(arys[i], arys[j])) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) res.push(arys[i]);
+        }
+        return res;
+    }
     function unzip(arrays) {
         let res = []
         for (let j = 0; j < arrays[0].length; j++) {
@@ -1304,6 +1319,13 @@ var kakapiya = (function () {
         unzipWith,
         without,
         add,
+        xorWith,
+        ary,
+        before,
+        after,
+        flip,
+        spread,
+        negate,
         //待调试
 
         keyBy,
@@ -1312,12 +1334,7 @@ var kakapiya = (function () {
         concat,
         curry,
         //等待结果
-        ary,
-        before,
-        after,
-        flip,
-        spread,
-        negate,
+
 
         //暂时放弃
         toPairs,
