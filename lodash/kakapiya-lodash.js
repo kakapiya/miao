@@ -1080,7 +1080,7 @@ var kakapiya = (function () {
 
         for (let i = 0; i < props.length; i++) {
             temp = ret
-            let path = props[i]
+            let paths = props[i]
             for (let j = 0; j < path.length; j++) {//a b 0 c
                 if (j === paths.length - 1) {
                     temp[path[j]] = values[i];
