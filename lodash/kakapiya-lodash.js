@@ -305,25 +305,12 @@ var kakapiya = (function () {
         return arr
     }
 
-
-    // no test
-    function every(arr, boolean) {
-        if (boolean != Boolean) {
-            if (findIndex(arr, boolean) != -1) return true
-            return false
-        }
-
-        for (e of arr) {
-            if (typeof e != "boolean") return false
+    function every(ary, predicate) {
+        predicate = shorthand(predicate)
+        for (var e of ary) {
+            if (!predicate(e)) return false
         }
         return true
-    }
-
-    function some(arr, boolean) {
-
-        if (ever(arr, boolean)) {
-            return true
-        }
     }
 
     //pass
@@ -1081,9 +1068,9 @@ var kakapiya = (function () {
         for (let i = 0; i < props.length; i++) {
             temp = ret
             let paths = props[i]
-            for (let j = 0; j < path.length; j++) {//a b 0 c
+            for (let j = 0; j < paths.length; j++) {//a b 0 c
                 if (j === paths.length - 1) {
-                    temp[path[j]] = values[i];
+                    temp[paths[j]] = values[i];
                     break;
                 }
                 if (temp[paths[j]] === undefined) {//第二次不用再建立对象了
@@ -1244,9 +1231,7 @@ var kakapiya = (function () {
         }
     }
 
-    function every(array, predicate) {
-        return !some(array, negate(predicate))
-    }
+
 
     function spread(func) {
         return function (ary) {
