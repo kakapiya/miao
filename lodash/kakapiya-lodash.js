@@ -414,55 +414,6 @@ var kakapiya = (function () {
 
     }
 
-    function groupBy(collection, iteratee) {
-        let res = {}
-        for (let i = 0; i < collection.length; i++) {
-            let key = iteratee(collection[i], i, collection)
-            if (!Array.isArray(res[key])) {
-                res[key] = []
-            }
-            res[key].push(collection[i])
-        }
-        return res
-    }
-
-    function keyBy(collection, iteratee) {
-        let res = {}
-        if (typeof iteratee == "function") {
-            for (let i = 0; i < collection.length; i++) {
-                let key = collection[iteratee(collection[i])]
-                res[key] = collection[i]
-
-            }
-            return res
-        }
-        if (Array.isArray(iteratee)) {
-            let key = iteratee[0];
-            for (let i = 0; i < collection.length; i++) {
-                res[collection[i][key]] = collection[i]
-            }
-
-            return res
-        }
-        if (typeof iteratee == "object") {
-            let key = iteratee;
-            for (let i = 0; i < collection.length; i++) {
-                res[collection[i][key]] = collection[i]
-            }
-
-            return res
-        }
-
-        if (typeof iteratee == "string") {
-            let key = iteratee;
-            for (let i = 0; i < collection.length; i++) {
-                res[collection[i][key]] = collection[i]
-            }
-            return res
-        }
-
-    }
-
     // unfinished
     function isEqual(val, other) {
         if (theTypeOf(val) !== theTypeOf(other)) return false
@@ -1277,6 +1228,106 @@ var kakapiya = (function () {
         return res
     }
 
+    function keyBy(collection, iteratee = identity) {
+        iteratee = shorthand(iteratee)
+        let flag = 1
+        if (theTypeOf(iteratee) == "function") {
+            flag = 0
+        }
+        let res = {}
+        if (theTypeOf(collection) == "array") {
+            for (e of collection) {
+                if (flag) {
+                    //{} left
+                    res[e[iteratee]] = e
+                } else {
+                    //
+                    res[iteratee(e)] = e
+                }
+            }
+        }
+        return res
+    }
+
+    function groupBy(collection, iteratee = identity) {
+        iteratee = shorthand(iteratee)
+        let res = {}
+        collection.forEach(it => {
+            if (res[iteratee(it)] == undefined) {
+                res[iteratee(it)] = [it]
+            } else {
+                res[iteratee(it)].push(it)
+            }
+            return
+        })
+        return res
+    }
+
+    function findLast(collection, predicate, fromIndex = collection.length - 1) {
+        predicate = shorthand(predicate)
+        for (let i = fromIndex; i >= 0; i--) {
+            let item = collection[i]
+            if (predicate(item)) return item
+        }
+    }
+
+    function flatMap(collection, iteratee = identity) {
+
+        iteratee = shorthand(iteratee)
+        let res = []
+        collection.map(e => iteratee(e)).forEach(e => res.push.apply(res, e))
+        return res
+
+    }
+
+    function flatMapDeep(collection, iteratee = identity) {
+        iteratee = shorthand(iteratee)
+
+        let res = []
+        collection.map(e => iteratee(e)).forEach(e => res.push.apply(res, flattenDeep(e)))
+        return res
+
+    }
+
+
+    function flatMapDepth(collection, iteratee = identity, depth = 1) {
+        iteratee = shorthand(iteratee)
+
+        let res = []
+        collection.map(e => iteratee(e)).forEach(e => res.push(flattenDepth(e, depth)))
+        return res
+    }
+
+    function forEach(collection, iteratee = identity) {
+        iteratee = shorthand(iteratee)
+        if (theTypeOf(collection) == "object") {
+            Object.keys(collection).forEach(key => {
+                iteratee(collection[key], key, collection)
+
+            })
+        } else {
+            for (let i = 0; i < collection.length; i++) {
+                iteratee(collection[i], i, collection)
+            }
+        }
+        return
+    }
+
+    function forEachRight(collection, iteratee = identity) {
+        iteratee = shorthand(iteratee)
+        if (theTypeOf(collection) == "object") {
+            let keys = Object.keys(collection)
+            for (let i = keys.length - 1; i >= 0; i--) {
+                iteratee(collection[keys[i]], keys[i], collection)
+            }
+        } else {
+            for (let i = collection.length - 1; i >= 0; i--) {
+                iteratee(collection[i], i, collection)
+            }
+        }
+        return
+    }
+
     return {
         compact,
         chunk,
@@ -1350,15 +1401,24 @@ var kakapiya = (function () {
         spread,
         negate,
         countBy,
+        //待完成
+
+        flatMap,
+        flatMapDeep,
+        flatMapDepth,
+        forEach,
+        forEachRight,
+        // forEach,
+        // forEachRight,
+
         //待调试
-        keyBy,
-        groupBy,
         concat,
         curry,
-        //等待结果
-
         isNaN,
-
+        //等待结果 
+        findLast,
+        keyBy,
+        groupBy,
         //暂时放弃
         toPairs,
         // keys,
@@ -1370,5 +1430,9 @@ var kakapiya = (function () {
 
 
 
-let res = kakapiya.differenceBy([2.1, 1.2], [2.3, 3.4], Math.floor)
+
+kakapiya.forEachRight({ 'a': 1, 'b': 2 }, function (value, key) {
+    console.log(key);
+});
+
 
