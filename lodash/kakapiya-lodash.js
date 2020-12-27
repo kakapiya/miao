@@ -1310,7 +1310,7 @@ var kakapiya = (function () {
                 iteratee(collection[i], i, collection)
             }
         }
-        return
+        return collection
     }
 
     function forEachRight(collection, iteratee = identity) {
@@ -1325,7 +1325,7 @@ var kakapiya = (function () {
                 iteratee(collection[i], i, collection)
             }
         }
-        return
+        return collection
     }
 
     return {
