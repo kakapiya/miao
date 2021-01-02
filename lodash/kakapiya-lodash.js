@@ -1,7 +1,6 @@
 var kakapiya = (function () {
 
     function isNaN(value) {
-
         return value !== value
     }
 
@@ -1154,20 +1153,6 @@ var kakapiya = (function () {
 
     }
 
-    function before(n, func) {
-        let c = 0
-        let res
-        return function (...args) {
-            if (c < n) {
-                return res = func.call(this, ...args)
-                c++
-            } else {
-                return res
-            }
-        }
-    }
-
-
     function after(n, func) {
         let c = 0
         let res
@@ -1192,11 +1177,9 @@ var kakapiya = (function () {
         }
     }
 
-
-
-    function spread(func) {
+    function spread(func, start = 0) {
         return function (ary) {
-            func.apply(this, ary)
+            return func.apply(this, ary)
         }
     }
 
@@ -1327,7 +1310,188 @@ var kakapiya = (function () {
         }
         return collection
     }
+    /**
+     * Invokes the iteratee n times, returning an array of the results of each invocation. 
+     * The iteratee is invoked with one argument; (index).
+     * @param {number} n 
+     * @param {Function} [iteratee=identity]
+     * @return {Array}
+     */
 
+    function times(n, iteratee = identity) {
+        let res = new Array(n)
+        if (n == 0) {
+            return []
+        }
+        let idx = -1
+
+        while (++idx < n) {
+            res[idx] = iteratee(idx)
+        }
+        return res
+    }
+    /**
+     * Converts value to a property path array.
+     * @param {*} value 
+     * @return {Array}
+     */
+    function toPath(value) {
+        return value.match(/\w/g)
+    }
+    /**
+     * Generates a unique ID. If prefix is given, the ID is appended to it.
+     * @param {string} [prefix='']
+     * @return {string}
+     */
+    const idCounter = {}
+    function uniqueId(prefix = '') {
+        if (!idCounter[prefix]) {
+            idCounter[prefix] = 0
+        }
+
+        const id = ++idCounter[prefix]
+        if (prefix === '$kakapiya$') {
+            return `${id}`
+        }
+        return `${prefix}${id}`
+    }
+    /**
+     * This method is like clone except that it recursively clones value.
+     * @param {*} value
+     * @return {*}
+     */
+    function cloneDeep(value) {
+        let newItem;
+        if (theTypeOf(value) == "array") {
+            newItem = []
+            for (e of value) {
+                newItem.push(cloneDeep(e))
+            }
+        }
+        if (theTypeOf(value) == "object") {
+            newItem = {}
+            for (e in value) {
+                newItem[e] = cloneDeep(value[e])
+            }
+        }
+        return newItem = value
+    }
+    /**
+     * Creates a new array concatenating array with any additional arrays and/or values.
+     * @param {Array} array
+     * @param {...*} [values]
+     * @return {Array}
+     */
+    function concat(array, ...values) {
+        let res = array.slice(0, array.length)
+        let o_v = Array.from(values)
+        for (e in values) {
+            try {
+                res.push.call(res, ...o_v[e])
+            } catch {
+                res.push.call(res, o_v[e])
+            }
+        }
+        return res
+    }
+
+    /**
+     * Creates a function that accepts up to one argument, ignoring any additional arguments.
+     * @param {Function} func
+     * @return {Function}
+     */
+
+    function unary(func) {
+        return ary(func, 1);
+    }
+
+    /**
+     * Creates a function that invokes `func`, with the `this` binding and arguments
+     * of the created function, while it's called less than `n` times. Subsequent
+     * calls to the created function return the result of the last `func` invocation.
+     *
+     * @param {number} n The number of calls at which `func` is no longer invoked.
+     * @param {Function} func The function to restrict.
+     * @returns {Function} Returns the new restricted function.
+     */
+
+    function before(n, func) {
+        let result
+        if (typeof func !== 'function') {
+            throw new TypeError('Expected a function')
+        }
+        return function (...args) {
+            if (--n > 0) {
+                result = func.apply(this, args)
+            }
+            if (n <= 1) {
+                func = undefined
+            }
+            return result
+        }
+    }
+
+    /**
+     * Creates a function that is restricted to invoking func once. 
+     * Repeat calls to the function return the value of the first invocation. 
+     * The func is invoked with the this binding and arguments of the created function.
+     * @param {Function} func
+     * @return {Function}
+     */
+
+    function once(func) {
+        return before(2, n)
+    }
+
+    /**
+ * Checks value to determine whether a default value should be returned in its place. 
+ * The defaultValue is returned if value is NaN, null, or undefined.
+ * @param {*} value 
+ * @param {*} defaultValue 
+ * @return {*}
+ */
+
+    function defaultTo(value, defaultValue) {
+        if (isNaN(value) || theTypeOf(value) == "undefined" || theTypeOf(value) == "null") {
+            return defaultValue
+        }
+        return value
+    }
+
+    /**
+     * Creates an array of numbers (positive and/or negative) progressing from start up to,
+     * but not including, end. A step of -1 is used if a negative start is specified without an end or step. 
+     * If end is not specified, it's set to start with start then set to 0.
+     * @param {number} [start=0]
+     * @param {number} end
+     * @param {number} [step=1]
+     * @return {Array}
+     */
+
+    function range(start, end, step = 1) {
+        if (arguments.length == 1) {
+            end = arguments[0]
+            start = 0
+            end < 0 ? step = -1 : step
+        }
+        let res = []
+        if (step == 0) {
+            count = end;
+            while (count) {
+                res.push(start)
+                count--
+            }
+            return res
+        }
+        for (let i = start; end < 0 ? i > end : i < end; i = i + step) {
+            res.push(i)
+        }
+        return res
+    }
+
+    function rangeRight(start, end, step) {
+        return range(start, end, step).reverse()
+    }
     return {
         compact,
         chunk,
@@ -1402,7 +1566,6 @@ var kakapiya = (function () {
         negate,
         countBy,
         //待完成
-
         flatMap,
         flatMapDeep,
         flatMapDepth,
@@ -1412,6 +1575,15 @@ var kakapiya = (function () {
         // forEachRight,
 
         //待调试
+        once,
+        defaultTo,
+        range,
+        rangeRight,
+        times,
+        toPath,
+        uniqueId,
+        cloneDeep,
+        unary,
         concat,
         curry,
         isNaN,
