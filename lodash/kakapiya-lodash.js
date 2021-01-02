@@ -1,10 +1,14 @@
 var kakapiya = (function () {
-
-    function isNaN(value) {
-        return value !== value
-    }
-
+    /**
+     * theTypeof funciton returns a string indicating the type of the unevaluated operand
+     * @param {*} e
+     * @return {string}
+    */
     function theTypeOf(e) {
+        function isNaN(value) {
+            return value !== value
+        }
+
         if (isNaN(e)) {
             return "NaN"
         } else {
@@ -349,12 +353,6 @@ var kakapiya = (function () {
         return arr.length
     }
 
-    function concat(arr, ...args) {
-        res = []
-        res.push.apply(arr, ...args)
-        return res
-    }
-
     function toPairs(object) {
         if (theTypeOf(object) == "set" || theTypeOf(object) == "map") {
             return Array.from(object)
@@ -390,30 +388,7 @@ var kakapiya = (function () {
         return array.slice(0, array.length - 1)
     }
 
-    // no test
-    //参数复用
-    function curry(func) {
-        //curried
-        return function () {
-            //先将第一个括号的参数传入args里
-            let args = Array.prototype.slice.call(arguments)
-            //curried(args) 返回的还是函数
-            let inner = function () {
-                args.push(...arguments)
-                return inner
-            }
-            //因为递归调用inner，所以最后返回的始终是函数，利用这种递归调用，变量被存在args中
-            //此时将这些参数拿出来用即可
-            inner.toString = function () {
-                return func(...args)
-            }
-            //延迟调用的参数再次压入
-            return inner
-        }
-
-    }
-
-    // unfinished
+    // pass
     function isEqual(val, other) {
         if (theTypeOf(val) !== theTypeOf(other)) return false
         if (theTypeOf(val) == "object") {
@@ -1440,7 +1415,7 @@ var kakapiya = (function () {
      */
 
     function once(func) {
-        return before(2, n)
+        return before(2, func)
     }
 
     /**
@@ -1452,6 +1427,9 @@ var kakapiya = (function () {
  */
 
     function defaultTo(value, defaultValue) {
+        function isNaN(value) {
+            return value !== value
+        }
         if (isNaN(value) || theTypeOf(value) == "undefined" || theTypeOf(value) == "null") {
             return defaultValue
         }
@@ -1476,7 +1454,7 @@ var kakapiya = (function () {
         }
         let res = []
         if (step == 0) {
-            count = end;
+            count = end - start;
             while (count) {
                 res.push(start)
                 count--
@@ -1490,7 +1468,108 @@ var kakapiya = (function () {
     }
 
     function rangeRight(start, end, step) {
+        if (arguments.length == 1) {
+            end = arguments[0]
+            start = 0
+            end < 0 ? step = -1 : step
+        }
         return range(start, end, step).reverse()
+    }
+
+    /**
+     * Removes elements from array corresponding to indexes and returns an array of removed elements.
+     * @param {Array} array 
+     * @param {...(number|number[])} [indexes] 
+     * @return {Array}
+     */
+
+    function pullAt(array, indexes) {
+        let res = []
+        let pulled = []
+        for (let i = 0; i < array.length; i++) {
+            if (!indexes.includes(i)) {
+                //留下的元素
+                res.push(array[i])
+            } else {
+                //抛出的元素
+                pulled.push(array[i])
+            }
+        }
+        let count = -1
+        while (++count < res.length) {
+            array[count] = res[count]
+        }
+        array.length = res.length
+        return pulled
+    }
+    /**
+     * Adds all own enumerable string keyed function properties of a source object to the destination object. 
+     * If object is a function, then methods are added to its prototype as well.
+     * @param {Function|Object} [object=lodash]
+     * @param {Object} source 
+     * @param {Object} [options={}] 
+     * @param {boolean} [options.chain=true]
+     * @return {*}
+     */
+    function mixin(obj, src) {
+        if (!src) {
+            src = obj;
+            obj = _;
+        }
+        for (const key in src) {
+            if (typeof src[key] === "function") {
+                obj[key] = src[key];
+                if (typeof obj === "funcition") {
+                    obj.prototype[key] = src[key];
+                }
+            }
+        }
+        return obj;
+    }
+
+
+    /**
+     * Creates a function that memoizes the result of func. 
+     * If resolver is provided, it determines the cache key 
+     * for storing the result based on the arguments provided to the memoized function.
+     * By default, the first argument provided to the memoized function is used as the map cache key. 
+     * The func is invoked with the this binding of the memoized function.
+     * @param {Funciton} func 
+     * @param {Function} resolver
+     * @return {Funciton}
+     */
+    function memoize(func, resolver) {
+        const wm = new Map();
+        const that = this;
+        return function (arg) {
+            if (wm.has(arg)) {
+                return wm.get(arg);
+            } else {
+                let res = func.apply(that, arguments);
+                if (resolver !== undefined) {
+                    res = resolver(res);
+                }
+                wm.set(arg, res);
+                return res;
+            }
+        }
+    }
+
+
+    /**
+     * Creates a function that accepts arguments of func and either invokes func returning its result, 
+     * if at least arity number of arguments have been provided, or returns a function that accepts the remaining func arguments, and so on. 
+     * The arity of func may be specified if func.length is not sufficient.
+     * @param {Funciton} func 
+     * @param {number} [arity=func.length]
+     * @return {Funciton}
+     */
+    function curry(func, arity = func.length) {
+        return (...args) => {
+            return args.length >= arity ?
+                func(...args) :
+                this.curry(func.bind(null, ...args), arity - args.length);
+        };
     }
     return {
         compact,
@@ -1587,6 +1666,9 @@ var kakapiya = (function () {
         concat,
         curry,
         isNaN,
+        pullAt,
+        memoize,
+        mixin,
         //等待结果 
         findLast,
         keyBy,
@@ -1603,8 +1685,5 @@ var kakapiya = (function () {
 
 
 
-kakapiya.forEachRight({ 'a': 1, 'b': 2 }, function (value, key) {
-    console.log(key);
-});
-
+let res = kakapiya.rangeRight(-4)
 
