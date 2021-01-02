@@ -1650,9 +1650,6 @@ var kakapiya = (function () {
         flatMapDepth,
         forEach,
         forEachRight,
-        // forEach,
-        // forEachRight,
-
         //待调试
         once,
         defaultTo,
